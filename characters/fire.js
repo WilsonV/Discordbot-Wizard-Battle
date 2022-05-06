@@ -42,11 +42,9 @@ module.exports = {
         cost: 0,
         effect: `+${1}${pipIcon} & +${200}💚`,
         execute() {
-          let starting_pips = myself.pips
-          let starting_health = myself.health
-          myself.pips = myself.addPips(1)
-          myself.health = myself.heal(200)
-          return { status: 'success', type: 'restore', buff: `${myself.health - starting_health}💚 & +${1}${pipIcon}` }
+          let pipsGained = myself.addPips(1)
+          let healed = myself.heal(200)
+          return { status: 'success', type: 'restore', buff: `${healed}💚 & +${pipsGained}${pipIcon}` }
         }
       },
       {
@@ -68,7 +66,7 @@ module.exports = {
       {
         name: 'Smoking Immolate',
         cost: 7,
-        effect: `Take ${300 * (1 + (myself.damage / 100))}💥 & Deal ${800 * (1 + (myself.damage / 100))}💥 $ -${10}🎯`,
+        effect: `Take ${300 * (1 + (myself.damage / 100))}💥 & Deal ${800 * (1 + (myself.damage / 100))}💥 & -${10}🎯`,
         execute(enemy) {
           myself.pips -= this.cost
           if (abilityMissed()) {
@@ -89,7 +87,7 @@ module.exports = {
       {
         name: 'Burning Dragon',
         cost: 10,
-        effect: `${800 * (1 + (myself.damage / 100))}💥 $ -${5}🛡 $ ${10}🗡`,
+        effect: `${800 * (1 + (myself.damage / 100))}💥 $ -${5}🛡 & ${10}🗡`,
         execute(enemy) {
           myself.pips -= this.cost
           if (abilityMissed()) {
@@ -117,18 +115,23 @@ module.exports = {
       }
     ]
   },
-  takeDamage(damage) {
-    damage = damage * (Math.min(Math.max(100 - enemy.defense, 0), 100) / 100)
+  takeDamage: function (damage) {
+    let myresist = this.resist
+    console.log("this resist is", myresist)
+    console.log("multiplier is", (Math.min(Math.max(100 - myresist, 0), 100) / 100))
+
+    damage = damage * (Math.min(Math.max(100 - this.resist, 0), 100) / 100)
+    console.log("Calculating", damage, "damage")
     this.health = Math.max(this.health - damage, 0)
     return damage
   },
-  addPips(amount = 1) {
+  addPips: function (amount = 1) {
     let starting_pips = this.pips
     amount = Math.abs(amount)
     this.pips = Math.min(this.pips + amount, 14)
     return this.pips - starting_pips
   },
-  heal(amount = 0) {
+  heal: function (amount = 0) {
     let starting_health = this.health
     amount = Math.abs(amount)
     this.health = Math.min(this.health + amount, this.maxHealth)

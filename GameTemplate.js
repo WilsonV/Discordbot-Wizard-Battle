@@ -1,6 +1,6 @@
 const GameStatus = require("./GameStatus")
-//const progressbar = require('string-progressbar')
 const progressbar = require('./Util/progressBar')
+const pipIconID = require("./pipIconID")
 //const characterSheetURL = 'https://i.imgur.com/fypdNon.png'
 
 module.exports = {
@@ -48,17 +48,17 @@ module.exports = {
 
     //Add stats
     //console.log("characters health is",currentCharacter.health)
-    newEmbed.addField('Health', `${progressbar.filledBar(player.character.maxHealth, Math.max(player.character.health, 0), 10)}`, true)
-    newEmbed.addField('Energy', `${progressbar.filledBar(100, player.character.energy, 10, ' ')}`, true)
-    newEmbed.addField('Strength', `${progressbar.filledBar(100, player.character.strength, 10, ' ')}`, true)
-    newEmbed.addField('Defense', `${progressbar.filledBar(100, player.character.defense, 10, ' ')}`, true)
-    newEmbed.addField('Speed', `${progressbar.filledBar(100, player.character.speed, 10, ' ')}`, true)
+    newEmbed.addField('Health', `${progressbar.filledBar(player.character.maxHealth, player.character.health, 10)}`, true)
+    newEmbed.addField('Pips', `${progressbar.filledBar(14, player.character.pips, 14, ' ')}`, true)
+    newEmbed.addField('Damage', `${progressbar.filledBar(100, player.character.damage, 10, ' ')}`, true)
+    newEmbed.addField('Resist', `${progressbar.filledBar(100, player.character.resist, 10, ' ')}`, true)
+    newEmbed.addField('Accuracy', `${progressbar.filledBar(100, player.character.accuracy, 10, ' ')}`, true)
     player.character.passive ? newEmbed.addField('Passive', player.character.passiveEffect, true) : newEmbed.addField('-', '-', true) // empty spot
 
     newEmbed.addFields(
       player.character.abilities().map((ability, index) => {
         let frontTag = '', endTag = ''
-        if (player.character.energy < ability.cost) {
+        if (player.character.pips < ability.cost) {
           frontTag = `~~`
           endTag = `~~`
         }
@@ -150,8 +150,8 @@ module.exports = {
         if (!isNaN(choice)) {
           if (!player.character.abilities()[choice]) return msg.react('⁉')
           const ability = player.character.abilities()[choice]
-          if (player.character.energy < ability.cost) {
-            msg.react('⚡')
+          if (player.character.pips < ability.cost) {
+            msg.react(pipIconID)
             return
           }
           //console.log(ability)
