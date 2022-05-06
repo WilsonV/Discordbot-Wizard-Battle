@@ -4,7 +4,7 @@ const progressbar = require('./Util/progressBar')
 //const characterSheetURL = 'https://i.imgur.com/fypdNon.png'
 
 module.exports = {
-  characterSheetURL: 'https://i.imgur.com/cjnR211.png',
+  characterSheetURL: 'https://i.imgur.com/fGiPsKX.png',
   status: GameStatus.WAITING_TO_ACCEPT,
   player1: { id: null, username: '', displayAvatarURL: '', character: null },
   player2: { id: null, username: '', displayAvatarURL: '', character: null },

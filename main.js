@@ -9,7 +9,7 @@ const GameStatus = require('./GameStatus');
 const GameTemplate = require('./GameTemplate');
 const BattleBetweenUsers = require('./Util/userBattle');
 
-const prefix = 'cb '
+const prefix = '!'
 const Games = {};
 const randomMatchChannel = { channel: null };
 const activePlayers = {}
@@ -54,7 +54,7 @@ for (const file of characterFiles) {
 
 
 client.once('ready', () => {
-  console.log("Character Battle Bot is online!")
+  console.log("Wizard Battle Bot is online!")
 })
 
 const activePlayerTrackTimer = new TaskTimer(60000 * MinutesBetweenRandomMatches)
@@ -128,10 +128,10 @@ client.on('messageCreate', (message) => {
       //Add stats
       //console.log("characters health is",currentCharacter.health)
       newEmbed.addField('Health', `${progressbar.filledBar(currentCharacter.maxHealth, currentCharacter.health, 10)}`, true)
-      newEmbed.addField('Energy', `${progressbar.filledBar(100, currentCharacter.energy, 10, ' ')}`, true)
-      newEmbed.addField('Strength', `${progressbar.filledBar(100, currentCharacter.strength, 10, ' ')}`, true)
-      newEmbed.addField('Defense', `${progressbar.filledBar(100, currentCharacter.defense, 10, ' ')}`, true)
-      newEmbed.addField('Speed', `${progressbar.filledBar(100, currentCharacter.speed, 10, ' ')}`, true)
+      newEmbed.addField('Pips', `${progressbar.filledBar(14, currentCharacter.pips, 14, ' ')}`, true)
+      newEmbed.addField('Damage', `${progressbar.filledBar(100, currentCharacter.damage, 10, ' ')}`, true)
+      newEmbed.addField('Resist', `${progressbar.filledBar(100, currentCharacter.resist, 10, ' ')}`, true)
+      newEmbed.addField('Accuracy', `${progressbar.filledBar(100, currentCharacter.accuracy, 10, ' ')}`, true)
       currentCharacter.passive ? newEmbed.addField('Passive', currentCharacter.passiveEffect, true) : newEmbed.addField('-', '-', true) // empty spot
 
       newEmbed.addFields(
