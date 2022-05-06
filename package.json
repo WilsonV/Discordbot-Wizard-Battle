@@ -1,0 +1,16 @@
+{
+  "name": "discordbot-character-battle",
+  "version": "1.0.0",
+  "description": "simulate battle between users via text",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main"
+  },
+  "author": "Wilson V.",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
+    "tasktimer": "^3.0.0"
+  }
+}
