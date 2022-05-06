@@ -40,10 +40,10 @@ module.exports = {
       {
         name: 'Re-Fuel',
         cost: 0,
-        effect: `+${1}${pipIcon} & +${200}💚`,
+        effect: `+${2}${pipIcon} & +${150}💚`,
         execute() {
           let pipsGained = myself.addPips(1)
-          let healed = myself.heal(200)
+          let healed = myself.heal(150)
           return { status: 'success', type: 'restore', buff: `${healed}💚 & +${pipsGained}${pipIcon}` }
         }
       },
@@ -116,12 +116,7 @@ module.exports = {
     ]
   },
   takeDamage: function (damage) {
-    let myresist = this.resist
-    console.log("this resist is", myresist)
-    console.log("multiplier is", (Math.min(Math.max(100 - myresist, 0), 100) / 100))
-
-    damage = damage * (Math.min(Math.max(100 - this.resist, 0), 100) / 100)
-    console.log("Calculating", damage, "damage")
+    damage = Math.floor(damage * (Math.min(Math.max(100 - this.resist, 0), 100) / 100))
     this.health = Math.max(this.health - damage, 0)
     return damage
   },

@@ -4,7 +4,7 @@ const pipIconID = require("./pipIconID")
 //const characterSheetURL = 'https://i.imgur.com/fypdNon.png'
 
 module.exports = {
-  characterSheetURL: 'https://i.imgur.com/fGiPsKX.png',
+  characterSheetURL: 'https://i.imgur.com/X7XrTT5.png',
   status: GameStatus.WAITING_TO_ACCEPT,
   player1: { id: null, username: '', displayAvatarURL: '', character: null },
   player2: { id: null, username: '', displayAvatarURL: '', character: null },
