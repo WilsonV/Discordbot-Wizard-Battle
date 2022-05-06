@@ -1,8 +1,8 @@
 const pipIcon = require('../pipIconID')
 module.exports = {
-  name: 'Fire Wizard',
-  nickname: 'fire',
-  imgURL: 'https://i.imgur.com/yjLelpe.png',
+  name: 'Gurtok Firebender',
+  nickname: 'gurtok',
+  imgURL: 'https://i.imgur.com/XloQdIC.png',
   maxHealth: 3000,
   health: 3000,
   pips: 5,
