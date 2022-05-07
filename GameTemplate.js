@@ -1,10 +1,9 @@
 const GameStatus = require("./GameStatus")
 const progressbar = require('./Util/progressBar')
 const pipIconID = require("./pipIconID")
-//const characterSheetURL = 'https://i.imgur.com/fypdNon.png'
 
 module.exports = {
-  characterSheetURL: 'https://i.imgur.com/B0oMUlE.png',
+  characterSheetURL: 'https://i.imgur.com/TclJv5E.png',
   status: GameStatus.WAITING_TO_ACCEPT,
   player1: { id: null, username: '', displayAvatarURL: '', character: null },
   player2: { id: null, username: '', displayAvatarURL: '', character: null },
@@ -86,7 +85,10 @@ module.exports = {
 
 
     await this.thread.send(`${player.username}'s Turn, Select a move`)
-    if (player.character.passive) player.character.passive(enemy.character)
+    if (player.character.passive) {
+      let response = player.character.passive(enemy.character)
+      if (response) this.thread.send(response)
+    }
     await this.showPlayerInfo(Discord, player)
 
   },

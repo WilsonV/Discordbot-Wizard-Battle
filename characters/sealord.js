@@ -29,6 +29,7 @@ module.exports = {
         //give damage and resist back
         this.damage += (this.calmBeforeStorm.damage * 2)
         this.resist += Math.min(this.calmBeforeStorm.resist, 100)
+        return `You've gained ${this.calmBeforeStorm.damage * 2}🗡 & ${this.calmBeforeStorm.resist}🛡`
       }
     }
   },
@@ -86,8 +87,6 @@ module.exports = {
             amount = 3
             myself.damage += 3
           }
-
-          let healed = myself.heal(200)
           return { status: 'success', type: 'buff', buff: `gained ${amount}${rndBuff} & +${pipsGained}${pipIconID}` }
         }
       },

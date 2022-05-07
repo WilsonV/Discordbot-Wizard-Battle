@@ -10,13 +10,30 @@ module.exports = {
   resist: 35,
   accuracy: 85,
   extraTurn: 0,
+  funeralCeremony: { active: false, cost: 8, turnsLeft: 0, damage: 0, pips: 0 },
   passive: function (enemy) {
 
     enemy.damage = Math.max(enemy.damage - 1, 0)
     this.damage++
 
+    if (this.funeralCeremony.active) {
+      this.funeralCeremony.turnsLeft--
+
+      if (this.funeralCeremony.turnsLeft <= 0) {
+        this.funeralCeremony.active = false
+        this.funeralCeremony.turnsLeft = 0
+
+        this.damage += this.funeralCeremony.damage
+        let pipsGained = this.addPips(this.funeralCeremony.pips)
+
+        enemy.damage = 0
+        enemy.resist = 0
+        return `You've gained ${this.funeralCeremony.damage}🗡, ${pipsGained}${pipIconID} & ${enemy.name} has lost all 🗡 and 🛡`
+      }
+    }
+
   },
-  passiveEffect: `-${1}🗡 on enemy & +${1}🗡 for self`,
+  passiveEffect: `-${1}🗡 on enemy & gain +${1}🗡, convert ${50}% all 💥 to 💚`,
   abilityMissed: function () {
     if (this.accuracy >= Math.floor(Math.random() * 101)) return false
     return true
@@ -26,125 +43,102 @@ module.exports = {
     const myself = this
     return [
       {
-        name: 'Wild Bolt',
+        name: 'Torment',
         cost: 0,
-        effect: `${Math.floor(10 * (1 + (myself.damage / 100)))}, ${Math.floor(100 * (1 + (myself.damage / 100)))} or ${Math.floor(1000 * (1 + (myself.damage / 100)))} 💥`,
+        effect: `${Math.floor(65 * myself.pips * (1 + (myself.damage / 100)))}💥`,
         execute(enemy) {
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = 10
-            switch (Math.floor(Math.random() * 3)) {
-              case 0:
-                damage = 10
-                break;
-              case 1:
-                damage = 100
-                break;
-              case 2:
-                damage = 1000
-                break
-              default:
-                damage = 10
-                break;
-            }
-            damage = enemy.takeDamage(Math.floor(damage * (1 + (myself.damage / 100))))
-            return { status: 'success', type: 'attack', damage }
+            let damage = enemy.takeDamage(Math.floor(65 * myself.pips * (1 + (myself.damage / 100))))
+            let healed = myself.heal(Math.floor(damage / 2))
+            return { status: 'success', type: 'attack', damage, buff: `received ${healed}💚` }
           }
 
         }
       },
       {
-        name: 'Supercharge',
+        name: 'Empower',
         cost: 0,
-        effect: `+${3}${pipIconID} & (+${200}💚 or +${3}🗡)`,
+        effect: `+${3}${pipIconID} & +${300}💚`,
         execute() {
           let pipsGained = myself.addPips(3)
-          let rndBuff = ''
-          let amount = 0
-          if (Math.floor(Math.random() * 2) < 1) {
-            rndBuff = '💚'
-            amount = myself.heal(200)
-          } else {
-            rndBuff = '🗡'
-            amount = 3
-            myself.damage += 3
-          }
-
-          let healed = myself.heal(200)
-          return { status: 'success', type: 'buff', buff: `gained ${amount}${rndBuff} & +${pipsGained}${pipIconID}` }
+          let healed = myself.heal(300)
+          return { status: 'success', type: 'restore', buff: `${healed}💚 & +${pipsGained}${pipIconID}` }
         }
       },
       {
-        name: 'Darkwind Tempest',
+        name: 'Plague Vampire',
         cost: 6,
-        effect: `+${5}🗡 Then ${Math.floor(480 * (1 + (myself.damage / 100)))}💥 & +${5}🎯`,
+        effect: `${Math.floor(350 * (1 + (myself.damage / 100)))}💥, -${5}🎯 & -${3}🗡`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            myself.damage += 5
-            let damage = Math.floor(480 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(350 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
-            let starting_accuracy = myself.accuracy
-            myself.accuracy = Math.min(myself.accuracy + 5, 100)
-            return { status: 'success', type: 'attack', damage, buff: `received +${5}🗡 & ${myself.accuracy - starting_accuracy}🎯` }
+            let healed = myself.heal(Math.floor(damage / 2))
+            let enemy_starting_accuracy = enemy.accuracy
+            enemy.accuracy = Math.max(enemy.accuracy - 5, 0)
+            let enemy_starting_damage = enemy.damage
+            enemy.damage = Math.max(enemy.damage - 5, 0)
+            return { status: 'success', type: 'attack', damage, buff: `received ${healed}💚, applied ${enemy.accuracy - enemy_starting_accuracy}🎯 & ${enemy.damage - enemy_starting_damage}🗡` }
           }
         }
       },
       {
-        name: `The Kraken's Wrath`,
+        name: `Wraith's Curse`,
         cost: 7,
-        effect: `${Math.floor(850 * (1 + (myself.damage / 100)))}💥 & -${10}🎯 & -${10}🗡`,
+        effect: `${Math.floor(500 * (1 + (myself.damage / 100)))}💥 & Steal ${10}🗡`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(850 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(500 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
-
-            let enemy_starting_accuracy = enemy.accuracy
-            enemy.accuracy = Math.max(enemy.accuracy - 10, 0)
+            let healed = myself.heal(Math.floor(damage / 2))
 
             let enemy_starting_damage = enemy.damage
-            enemy.damage = Math.max(enemy.damage - 10, 0)
-
-            return { status: 'success', type: 'attack', damage, debuff: `applied ${enemy.accuracy - enemy_starting_accuracy}🎯 & ${enemy.damage - enemy_starting_damage}🗡 on ${enemy.name}` }
+            let starting_damage = myself.damage
+            enemy.damage = Math.max(enemy.damage - 5, 0)
+            myself.damage = Math.min(myself.damage + (enemy_starting_damage - enemy.damage), 100)
+            return { status: 'success', type: 'attack', damage, debuff: `received +${healed}💚 & stole ${enemy_starting_damage - enemy.damage}🗡 from ${enemy.name} and gained ${myself.damage - starting_damage}🗡` }
           }
         }
       },
       {
-        name: 'Unforgiving Storm Lord',
+        name: 'Skeletal Dragon Guardian',
         cost: 11,
-        effect: `${Math.floor(950 * (1 + (myself.damage / 100)))}💥 & +${2}${pipIconID} & +${1}🕑`,
+        effect: `${Math.floor(700 * (1 + (myself.damage / 100)))}💥 & +${15}🛡`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(950 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(700 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
+            let healed = myself.heal(Math.floor(damage / 2))
 
-            let pipsGained = myself.addPips(2)
+            let starting_resist = myself.resist
+            myself.resist = Math.min(myself.resist + 15, 100)
 
-            myself.extraTurn = 1
-            return { status: 'success', type: 'attack', damage, buff: `received +${pipsGained}${pipIconID} & gained 1🕑` }
+            return { status: 'success', type: 'attack', damage, buff: `received +${healed}💚 & gained ${myself.resist - starting_resist}🛡` }
           }
         }
       },
       {
-        name: 'Calm Before The Storm',
-        cost: myself.calmBeforeStorm.cost,
-        effect: `lose -${myself.damage}🗡 & -${myself.resist}🛡 now, gain +${myself.damage * 2}🗡 & +${myself.resist}🛡 after 3🕑`,
-        execute() {
-          myself.calmBeforeStorm = { cost: Infinity, active: true, turnsLeft: 3, damage: myself.damage, resist: myself.resist }
-          let starting_damage = myself.damage
-          let starting_resist = myself.resist
-          myself.damage = 0
-          myself.resist = 0
-          return { status: 'success', type: 'buff', buff: `lost ${starting_damage}🗡 & ${starting_resist}🛡, will gain ${starting_damage * 2}🗡 & ${starting_resist}🛡 in 3🕑` }
+        name: 'Funeral Ceremony',
+        cost: myself.funeralCeremony.cost,
+        effect: `lose ${50}%💚 and ${50}%💖, in ${5}🕑 gain +${50}🗡, +${4}${pipIconID} & enemy loses all 🗡 and 🛡`,
+        execute(enemy) {
+          myself.funeralCeremony = { active: true, cost: Infinity, turnsLeft: 5, damage: 50, pips: 4 }
+          let starting_health = myself.health
+          let starting_maxhealth = myself.maxHealth
+          myself.health = Math.floor(myself.health / 2)
+          myself.maxHealth = Math.floor(myself.maxHealth / 2)
+          return { status: 'success', type: 'buff', buff: `lost ${starting_health - myself.health}💚 & ${starting_maxhealth - myself.maxHealth}💖, will gain ${50}🗡 & ${4}${pipIconID} in ${5}🕑 & $${enemy.name} will lose all 🗡 and 🛡 in ${5}🕑` }
         }
       }
     ]

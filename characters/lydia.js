@@ -26,6 +26,7 @@ module.exports = {
         this.frozenGiantBoost.turnsLeft = 0
 
         this.resist = Math.max(this.resist - this.frozenGiantBoost.resist, 0)
+        return `You've lost ${this.frozenGiantBoost.resist}🛡`
       }
     }
   },
@@ -41,12 +42,12 @@ module.exports = {
       {
         name: 'Snowburst',
         cost: 0,
-        effect: `${Math.floor(this.damage * this.pips * (1 + (myself.damage / 100)))}💥`,
+        effect: `${Math.floor(50 * myself.pips * (1 + (myself.damage / 100)))}💥`,
         execute(enemy) {
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(myself.damage * myself.pips * (1 + (myself.damage / 100)))
+            let damage = Math.floor(50 * myself.pips * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
             return { status: 'success', type: 'attack', damage }
           }
