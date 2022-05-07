@@ -73,17 +73,20 @@ module.exports = {
   runPlayersTurn: async function (Discord, client) {
 
     let player = null
+    let enemy = null
 
     if (this.status === GameStatus.PLAYER1_TURN) {
       player = this.player1
+      enemy = this.player2
     }
     if (this.status === GameStatus.PLAYER2_TURN) {
       player = this.player2
+      enemy = this.player1
     }
 
 
     await this.thread.send(`${player.username}'s Turn, Select a move`)
-    if (player.character.passive) player.character.passive()
+    if (player.character.passive) player.character.passive(enemy.character)
     await this.showPlayerInfo(Discord, player)
 
   },

@@ -9,11 +9,10 @@ module.exports = {
   damage: 60,
   resist: 20,
   accuracy: 65,
-  pheonixCost: 0,
   extraTurn: 0,
   calmBeforeStorm: { cost: 0, active: false, turnsLeft: 0, damage: 0, resist: 0 },
   passive: function () {
-    this.pips++
+    this.addPips(1)
     this.damage = this.damage + 2
 
     //remove extra turns

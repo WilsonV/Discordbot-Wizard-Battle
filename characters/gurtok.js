@@ -6,12 +6,12 @@ module.exports = {
   maxHealth: 3000,
   health: 3000,
   pips: 4,
-  damage: 45,
+  damage: 55,
   resist: 30,
   accuracy: 75,
   pheonixCost: 0,
   passive: function () {
-    this.pips++
+    this.addPips(1)
     this.damage++
   },
   passiveEffect: `+${1}${pipIcon} & +${1}🗡`,
