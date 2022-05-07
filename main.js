@@ -47,7 +47,7 @@ const characterFiles = fs
 
 for (const file of characterFiles) {
   const character = require(`./characters/${file}`);
-
+  console.log("added", character.nickname)
   client.characters.set(character.nickname, character);
 }
 
@@ -98,13 +98,14 @@ activePlayerTrackTimer.start()
 client.on('messageCreate', (message) => {
 
   try {
-    //Random Matches behavior
+    //Random Matches registry
     if (!message.content.startsWith(prefix) && !message.author.bot) {
       activePlayers[message.author.id] = Date.now() + (60000 * MinutesToMarkPlayersActive)
     }
 
-    //Command code behavior
+    //Command code behavior (prevents commands outside of match channel)
     if (!message.content.startsWith(prefix) || message.author.bot) return;
+
     const args = message.content.slice(prefix.length).split(" ");
     const command = args.shift().toLowerCase();
 
@@ -144,8 +145,6 @@ client.on('messageCreate', (message) => {
     } else {
       return message.reply("That's NOT a command.")
     }
-
-
 
   } catch (error) {
     message.reply("An error occured.")

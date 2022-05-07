@@ -5,32 +5,33 @@ module.exports = {
   imgURL: 'https://i.imgur.com/XloQdIC.png',
   maxHealth: 3000,
   health: 3000,
-  pips: 5,
+  pips: 4,
   damage: 45,
   resist: 30,
   accuracy: 75,
   pheonixCost: 0,
   passive: function () {
     this.pips++
+    this.damage++
   },
-  passiveEffect: `+${1}${pipIcon}`,
+  passiveEffect: `+${1}${pipIcon} & +${1}🗡`,
   abilityMissed: function () {
-    if (this.accuracy >= Math.floor(Math.random() * 101)) return true
-    return false
+    if (this.accuracy >= Math.floor(Math.random() * 101)) return false
+    return true
   },
   abilities: function () {
-    const abilityMissed = this.abilityMissed
+    //const abilityMissed = this.abilityMissed
     const myself = this
     return [
       {
         name: 'Blaze',
         cost: 0,
-        effect: `${this.damage * this.pips}💥`,
+        effect: `${Math.floor(this.damage * this.pips * (1 + (myself.damage / 100)))}💥`,
         execute(enemy) {
-          if (abilityMissed()) {
+          if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(myself.damage * myself.pips)
+            let damage = Math.floor(myself.damage * myself.pips * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
             return { status: 'success', type: 'attack', damage }
           }
@@ -42,7 +43,7 @@ module.exports = {
         cost: 0,
         effect: `+${2}${pipIcon} & +${150}💚`,
         execute() {
-          let pipsGained = myself.addPips(1)
+          let pipsGained = myself.addPips(2)
           let healed = myself.heal(150)
           return { status: 'success', type: 'restore', buff: `${healed}💚 & +${pipsGained}${pipIcon}` }
         }
@@ -50,10 +51,10 @@ module.exports = {
       {
         name: 'Burning Meteor',
         cost: 5,
-        effect: `${400 * (1 + (myself.damage / 100))}💥 +${5}🗡`,
+        effect: `${Math.floor(400 * (1 + (myself.damage / 100)))}💥 & +${5}🗡`,
         execute(enemy) {
           myself.pips -= this.cost
-          if (abilityMissed()) {
+          if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
             let damage = Math.floor(400 * (1 + (myself.damage / 100)))
@@ -66,10 +67,10 @@ module.exports = {
       {
         name: 'Smoking Immolate',
         cost: 7,
-        effect: `Take ${300 * (1 + (myself.damage / 100))}💥 & Deal ${800 * (1 + (myself.damage / 100))}💥 & -${10}🎯`,
+        effect: `Take ${Math.floor(300 * (1 + (myself.damage / 100)))}💥 & Deal ${Math.floor(800 * (1 + (myself.damage / 100)))}💥 & -${10}🎯`,
         execute(enemy) {
           myself.pips -= this.cost
-          if (abilityMissed()) {
+          if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
             let selfDamage = Math.floor(300 * (1 + (myself.damage / 100)))
@@ -87,10 +88,10 @@ module.exports = {
       {
         name: 'Burning Dragon',
         cost: 10,
-        effect: `${800 * (1 + (myself.damage / 100))}💥 $ -${5}🛡 & ${10}🗡`,
+        effect: `${Math.floor(800 * (1 + (myself.damage / 100)))}💥 & -${5}🛡 & ${10}🗡`,
         execute(enemy) {
           myself.pips -= this.cost
-          if (abilityMissed()) {
+          if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
             let damage = Math.floor(800 * (1 + (myself.damage / 100)))
@@ -108,7 +109,7 @@ module.exports = {
         effect: `+${50}%💚 & +${3}${pipIcon} (📋💚 < 5%)`,
         execute() {
           let pipsGained = myself.addPips(3)
-          let healed = myself.heal(myself.maxHealth * .5)
+          let healed = myself.heal(Math.floor(myself.maxHealth * .5))
           myself.pheonixCost = Infinity
           return { status: 'success', type: 'restore', buff: `+${healed}💚 & +${pipsGained}${pipIcon}` }
         }

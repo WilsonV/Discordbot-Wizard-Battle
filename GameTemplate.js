@@ -4,7 +4,7 @@ const pipIconID = require("./pipIconID")
 //const characterSheetURL = 'https://i.imgur.com/fypdNon.png'
 
 module.exports = {
-  characterSheetURL: 'https://i.imgur.com/X7XrTT5.png',
+  characterSheetURL: 'https://i.imgur.com/B0oMUlE.png',
   status: GameStatus.WAITING_TO_ACCEPT,
   player1: { id: null, username: '', displayAvatarURL: '', character: null },
   player2: { id: null, username: '', displayAvatarURL: '', character: null },
@@ -36,15 +36,16 @@ module.exports = {
     //console.log('Showing this player',player.character)
     const newEmbed = new Discord.MessageEmbed()
       .setTimestamp(Date.now())
-      .setColor("#0000FF")
       .setTitle(`${player.username}'s stats (${player.character.name})`)
       .setThumbnail(player.character.imgURL)
-      //.setImage(playerCharacter.imgURL)
       .setDescription(`Current Stats for ${player.character.name}`)
-    // .setImage(player.character.imgURL)
-    // .setFooter({ text: `${' - '.repeat(40)}` })
 
-    //console.log('URL',player.displayAvatarURL)
+    if (player.id === this.player1.id) {
+      newEmbed.setColor("#FF0000")
+    } else {
+      newEmbed.setColor("#00FF00")
+    }
+
 
     //Add stats
     //console.log("characters health is",currentCharacter.health)
