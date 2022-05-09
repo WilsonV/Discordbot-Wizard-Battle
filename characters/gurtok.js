@@ -106,9 +106,9 @@ module.exports = {
       {
         name: 'Everlasting Pheonix',
         cost: (myself.health <= myself.maxHealth * .05) ? myself.pheonixCost : Infinity,
-        effect: `+${50}%💚 & +${3}${pipIcon} (📋💚 < 5%)`,
+        effect: `+${50}%💚 & +${6}${pipIcon} & +${50}🗡 (📋💚 < 5%)`,
         execute() {
-          let pipsGained = myself.addPips(3)
+          let pipsGained = myself.addPips(6)
           let healed = myself.heal(Math.floor(myself.maxHealth * .5))
           myself.pheonixCost = Infinity
           return { status: 'success', type: 'restore', buff: `+${healed}💚 & +${pipsGained}${pipIcon}` }
