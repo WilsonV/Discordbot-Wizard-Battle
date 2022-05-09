@@ -5,7 +5,7 @@ module.exports = {
   imgURL: 'https://i.imgur.com/726wGkw.png',
   maxHealth: 3300,
   health: 3300,
-  pips: 6,
+  pips: 3,
   damage: 45,
   resist: 35,
   accuracy: 85,
@@ -138,7 +138,7 @@ module.exports = {
           let starting_maxhealth = myself.maxHealth
           myself.health = Math.floor(myself.health / 2)
           myself.maxHealth = Math.floor(myself.maxHealth / 2)
-          return { status: 'success', type: 'buff', buff: `lost ${starting_health - myself.health}💚 & ${starting_maxhealth - myself.maxHealth}💖, will gain ${50}🗡 & ${4}${pipIconID} in ${5}🕑 & $${enemy.name} will lose all 🗡 and 🛡 in ${5}🕑` }
+          return { status: 'success', type: 'buff', buff: `lost ${starting_health - myself.health}💚 & ${starting_maxhealth - myself.maxHealth}💖, will gain ${50}🗡 & ${4}${pipIconID} in ${5}🕑 & ${enemy.name} will lose all 🗡 and 🛡 in ${5}🕑` }
         }
       }
     ]

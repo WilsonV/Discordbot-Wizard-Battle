@@ -3,7 +3,7 @@ const progressbar = require('./Util/progressBar')
 const pipIconID = require("./pipIconID")
 
 module.exports = {
-  characterSheetURL: 'https://i.imgur.com/TclJv5E.png',
+  characterSheetURL: 'https://i.imgur.com/du00aC3.png',
   status: GameStatus.WAITING_TO_ACCEPT,
   player1: { id: null, username: '', displayAvatarURL: '', character: null },
   player2: { id: null, username: '', displayAvatarURL: '', character: null },
@@ -37,9 +37,9 @@ module.exports = {
       .setTimestamp(Date.now())
       .setTitle(`${player.username}'s stats (${player.character.name})`)
       .setThumbnail(player.character.imgURL)
-      .setDescription(`Current Stats for ${player.character.name}`)
+      .setDescription(`${player.character.passive ? `**Passive**: ${typeof player.character.passiveEffect === 'function' ? player.character.passiveEffect() : player.character.passiveEffect}` : 'No passive effect'}`)
 
-    if (player.id === this.player1.id) {
+    if (this.status === GameStatus.PLAYER1_TURN) {
       newEmbed.setColor("#FF0000")
     } else {
       newEmbed.setColor("#00FF00")
@@ -53,7 +53,7 @@ module.exports = {
     newEmbed.addField('Damage', `${progressbar.filledBar(100, player.character.damage, 10, ' ')}`, true)
     newEmbed.addField('Resist', `${progressbar.filledBar(100, player.character.resist, 10, ' ')}`, true)
     newEmbed.addField('Accuracy', `${progressbar.filledBar(100, player.character.accuracy, 10, ' ')}`, true)
-    player.character.passive ? newEmbed.addField('Passive', player.character.passiveEffect, true) : newEmbed.addField('-', '-', true) // empty spot
+    player.character.healBoost ? newEmbed.addField('Heal Boost', `${Math.ceil((player.character.healBoost - 1) * 100)}%`, true) : newEmbed.addField('-', '-', true) // empty spot
 
     newEmbed.addFields(
       player.character.abilities().map((ability, index) => {

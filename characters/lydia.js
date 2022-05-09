@@ -3,8 +3,8 @@ module.exports = {
   name: 'Lydia Greyrose',
   nickname: 'lydia',
   imgURL: 'https://i.imgur.com/LUGZvy7.jpg',
-  maxHealth: 4500,
-  health: 4500,
+  maxHealth: 4000,
+  health: 4000,
   pips: 6,
   damage: 25,
   resist: 40,
@@ -12,9 +12,9 @@ module.exports = {
   frozenGiantBoost: { active: false, turnsLeft: 0, resist: 0 },
   iceAgeCost: 0,
   passive: function () {
-    this.health = Math.min(this.health + 100, this.maxHealth)
+    this.heal(50)
 
-    if (this.resist < 70) {
+    if (this.resist < 60) {
       this.resist = Math.min(this.resist + 1, 100)
     }
 
@@ -30,7 +30,7 @@ module.exports = {
       }
     }
   },
-  passiveEffect: `+${100}💚 & +${1}🛡 (up to 70🛡)`,
+  passiveEffect: `+${50}💚 & +${1}🛡 (up to 60🛡)`,
   abilityMissed: function () {
     if (this.accuracy >= Math.floor(Math.random() * 101)) return false
     return true
@@ -57,12 +57,12 @@ module.exports = {
       {
         name: 'Cool Down',
         cost: 0,
-        effect: `+${2}${pipIcon} & +${100}💖 & +${300}💚`,
+        effect: `+${2}${pipIcon} & +${50}💖 & +${100}💚`,
         execute() {
           let pipsGained = myself.addPips(2)
-          let healed = myself.heal(300)
-          myself.maxHealth += 100
-          return { status: 'success', type: 'restore', buff: `${healed}💚 & +${pipsGained}${pipIcon} & +${100}💖` }
+          let healed = myself.heal(100)
+          myself.maxHealth += 50
+          return { status: 'success', type: 'restore', buff: `${healed}💚 & +${pipsGained}${pipIcon} & +${50}💖` }
         }
       },
       {
@@ -106,7 +106,7 @@ module.exports = {
       {
         name: 'Frozen Ice Giant',
         cost: 10,
-        effect: `${Math.floor(1000 * (1 + (myself.damage / 100)))}💥 & +${500}💖 & +${30}🛡 for 3🕑`,
+        effect: `${Math.floor(1000 * (1 + (myself.damage / 100)))}💥 & +${200}💖 & +${30}🛡 for 3🕑`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
@@ -115,20 +115,20 @@ module.exports = {
             let damage = Math.floor(1000 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
 
-            myself.maxHealth += 500
+            myself.maxHealth += 200
 
             let starting_resist = myself.resist
             myself.resist = Math.min(myself.resist + 30, 100)
 
             myself.frozenGiantBoost = { active: true, turnsLeft: 3, resist: myself.resist - starting_resist }
-            return { status: 'success', type: 'attack', damage, buff: `received ${500}💖 & +${myself.frozenGiantBoost.resist}🛡 for 3🕑` }
+            return { status: 'success', type: 'attack', damage, buff: `received ${200}💖 & +${myself.frozenGiantBoost.resist}🛡 for 3🕑` }
           }
         }
       },
       {
         name: 'Ice Age',
         cost: myself.iceAgeCost,
-        effect: `convert ${50}%🛡 -> 🗡, +${500}💖 & +${800}💚`,
+        effect: `convert ${50}%🛡 -> 🗡, +${300}💖 & +${300}💚`,
         execute() {
 
           let deduct = Math.floor(myself.resist / 2)
@@ -136,10 +136,10 @@ module.exports = {
           myself.resist -= deduct
           myself.damage += deduct
 
-          myself.maxHealth += 500
-          let healed = myself.heal(800)
+          myself.maxHealth += 300
+          let healed = myself.heal(300)
           myself.iceAgeCost = Infinity
-          return { status: 'success', type: 'restore', buff: `+${500}💖 & +${healed}💚 & -${deduct}🛡 & +${deduct}🗡` }
+          return { status: 'success', type: 'restore', buff: `+${300}💖 & +${healed}💚 & -${deduct}🛡 & +${deduct}🗡` }
         }
       }
     ]

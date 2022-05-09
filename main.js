@@ -47,7 +47,7 @@ const characterFiles = fs
 
 for (const file of characterFiles) {
   const character = require(`./characters/${file}`);
-  console.log("added", character.nickname)
+
   client.characters.set(character.nickname, character);
 }
 
@@ -120,10 +120,10 @@ client.on('messageCreate', (message) => {
 
       const newEmbed = new Discord.MessageEmbed()
         .setTimestamp(Date.now())
-        .setColor("#00ff00")
+        .setColor("#ffffff")
         .setTitle(`${currentCharacter.name}'s stats`)
         .setThumbnail(currentCharacter.imgURL)
-        .setDescription(`Detailed stats for ${currentCharacter.name}`)
+        .setDescription(`${currentCharacter.passive ? `**Passive**: ${typeof currentCharacter.passiveEffect === 'function' ? currentCharacter.passiveEffect() : currentCharacter.passiveEffect}` : 'No passive effect'}`)
       // .setFooter({ text: `${' - '.repeat(40)}` })
 
       //Add stats
@@ -133,7 +133,7 @@ client.on('messageCreate', (message) => {
       newEmbed.addField('Damage', `${progressbar.filledBar(100, currentCharacter.damage, 10, ' ')}`, true)
       newEmbed.addField('Resist', `${progressbar.filledBar(100, currentCharacter.resist, 10, ' ')}`, true)
       newEmbed.addField('Accuracy', `${progressbar.filledBar(100, currentCharacter.accuracy, 10, ' ')}`, true)
-      currentCharacter.passive ? newEmbed.addField('Passive', currentCharacter.passiveEffect, true) : newEmbed.addField('-', '-', true) // empty spot
+      currentCharacter.healBoost ? newEmbed.addField('Heal Boost', `${(currentCharacter.healBoost - 1) * 100}%`, true) : newEmbed.addField('-', '-', true) // empty spot
 
       newEmbed.addFields(
         currentCharacter.abilities().map((ability, index) => {
