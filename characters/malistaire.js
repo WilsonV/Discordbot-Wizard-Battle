@@ -102,8 +102,8 @@ module.exports = {
 
             let enemy_starting_damage = enemy.damage
             let starting_damage = myself.damage
-            enemy.damage = Math.max(enemy.damage - 5, 0)
-            myself.damage = Math.min(myself.damage + (enemy_starting_damage - enemy.damage), 100)
+            enemy.damage = Math.max(enemy.damage - 10, 0)
+            myself.damage += (enemy_starting_damage - enemy.damage)
             return { status: 'success', type: 'attack', damage, debuff: `received +${healed}💚 & stole ${enemy_starting_damage - enemy.damage}🗡 from ${enemy.name} and gained ${myself.damage - starting_damage}🗡` }
           }
         }

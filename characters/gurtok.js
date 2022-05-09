@@ -88,7 +88,7 @@ module.exports = {
       {
         name: 'Burning Dragon',
         cost: 10,
-        effect: `${Math.floor(800 * (1 + (myself.damage / 100)))}💥 & -${5}🛡 & ${10}🗡`,
+        effect: `${Math.floor(800 * (1 + (myself.damage / 100)))}💥 & -${10}🛡 & +${10}🗡`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
@@ -98,7 +98,7 @@ module.exports = {
             damage = enemy.takeDamage(damage)
             myself.damage += 10
             let enemy_starting_resist = enemy.resist
-            enemy.resist = Math.max(enemy.resist - 5, 0)
+            enemy.resist = Math.max(enemy.resist - 10, 0)
             return { status: 'success', type: 'attack', damage, buff: `received +${10}🗡`, debuff: `applied ${enemy.resist - enemy_starting_resist}🛡 on ${enemy.name}` }
           }
         }
