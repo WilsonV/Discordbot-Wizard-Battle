@@ -45,7 +45,7 @@ module.exports = {
       {
         name: 'Torment',
         cost: 0,
-        effect: `${Math.floor(65 * myself.pips * (1 + (myself.damage / 100)))}💥`,
+        effect: `${Math.floor(60 * myself.pips * (1 + (myself.damage / 100)))}💥`,
         execute(enemy) {
           if (myself.abilityMissed()) {
             return { status: 'miss' }

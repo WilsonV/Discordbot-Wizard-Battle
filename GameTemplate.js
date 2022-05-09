@@ -3,7 +3,7 @@ const progressbar = require('./Util/progressBar')
 const pipIconID = require("./pipIconID")
 
 module.exports = {
-  characterSheetURL: 'https://i.imgur.com/lCvLNs0.png',
+  characterSheetURL: 'https://i.imgur.com/vw5yben.png',
   status: GameStatus.WAITING_TO_ACCEPT,
   player1: { id: null, username: '', displayAvatarURL: '', character: null },
   player2: { id: null, username: '', displayAvatarURL: '', character: null },

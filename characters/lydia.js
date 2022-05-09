@@ -6,7 +6,7 @@ module.exports = {
   maxHealth: 4000,
   health: 4000,
   pips: 6,
-  damage: 25,
+  damage: 30,
   resist: 40,
   accuracy: 80,
   frozenGiantBoost: { active: false, turnsLeft: 0, resist: 0 },

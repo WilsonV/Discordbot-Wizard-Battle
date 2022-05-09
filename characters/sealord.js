@@ -6,11 +6,12 @@ module.exports = {
   maxHealth: 2300,
   health: 2300,
   pips: 5,
-  damage: 60,
+  damage: 70,
   resist: 20,
   accuracy: 65,
   extraTurn: 0,
   calmBeforeStorm: { cost: 0, active: false, turnsLeft: 0, damage: 0, resist: 0 },
+  enfeeble: { playable: true, cost: 0 },
   passive: function () {
     this.addPips(1)
     this.damage = this.damage + 2
@@ -29,6 +30,7 @@ module.exports = {
         //give damage and resist back
         this.damage += (this.calmBeforeStorm.damage * 2)
         this.resist += Math.min(this.calmBeforeStorm.resist, 100)
+        this.enfeeble.playable = true
         return `You've gained ${this.calmBeforeStorm.damage * 2}🗡 & ${this.calmBeforeStorm.resist}🛡`
       }
     }
@@ -133,18 +135,18 @@ module.exports = {
       {
         name: 'Unforgiving Storm Lord',
         cost: 11,
-        effect: `${Math.floor(950 * (1 + (myself.damage / 100)))}💥 & +${2}${pipIconID} & +${1}🕑`,
+        effect: `${Math.floor(1200 * (1 + (myself.damage / 100)))}💥 & +${2}${pipIconID} & +${1}🕑`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(950 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(1200 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
 
             let pipsGained = myself.addPips(2)
 
-            myself.extraTurn = 1
+            myself.extraTurn++
             return { status: 'success', type: 'attack', damage, buff: `received +${pipsGained}${pipIconID} & gained 1🕑` }
           }
         }
@@ -152,14 +154,31 @@ module.exports = {
       {
         name: 'Calm Before The Storm',
         cost: myself.calmBeforeStorm.cost,
-        effect: `lose -${myself.damage}🗡 & -${myself.resist}🛡 now, gain +${myself.damage * 2}🗡 & +${myself.resist}🛡 after 3🕑`,
+        effect: `lose -${myself.damage}🗡 & -${myself.resist}🛡 now, gain +${myself.damage * 2}🗡 & +${myself.resist}🛡 after 3🕑\n[🚫 Enfeeble for 3🕑]`,
         execute() {
+          myself.pips -= this.cost
           myself.calmBeforeStorm = { cost: Infinity, active: true, turnsLeft: 3, damage: myself.damage, resist: myself.resist }
           let starting_damage = myself.damage
           let starting_resist = myself.resist
           myself.damage = 0
           myself.resist = 0
+          myself.enfeeble.playable = false
           return { status: 'success', type: 'buff', buff: `lost ${starting_damage}🗡 & ${starting_resist}🛡, will gain ${starting_damage * 2}🗡 & ${starting_resist}🛡 in 3🕑` }
+        }
+      },
+      {
+        name: 'Enfeeble',
+        cost: myself.enfeeble.playable ? myself.enfeeble.cost : Infinity,
+        effect: `Remove all of your enemies 🗡 if they have more 🗡 than you`,
+        execute(enemy) {
+          myself.pips -= this.cost
+          let deduct = 0
+          if (enemy.damage > myself.damage) {
+            deduct = enemy.damage
+            enemy.damage = 0
+          }
+          myself.enfeeble.cost = Infinity
+          return { status: 'success', type: 'debuff', debuff: `-${deduct}🗡` }
         }
       }
     ]

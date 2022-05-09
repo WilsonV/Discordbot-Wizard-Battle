@@ -3,10 +3,10 @@ module.exports = {
   name: 'Gurtok Firebender',
   nickname: 'gurtok',
   imgURL: 'https://i.imgur.com/XloQdIC.png',
-  maxHealth: 3000,
-  health: 3000,
+  maxHealth: 2800,
+  health: 2800,
   pips: 4,
-  damage: 55,
+  damage: 65,
   resist: 30,
   accuracy: 75,
   pheonixCost: 0,
@@ -88,13 +88,13 @@ module.exports = {
       {
         name: 'Burning Dragon',
         cost: 10,
-        effect: `${Math.floor(800 * (1 + (myself.damage / 100)))}💥 & -${10}🛡 & +${10}🗡`,
+        effect: `${Math.floor(1000 * (1 + (myself.damage / 100)))}💥 & -${10}🛡 & +${10}🗡`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(800 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(1000 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
             myself.damage += 10
             let enemy_starting_resist = enemy.resist
