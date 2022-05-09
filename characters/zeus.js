@@ -108,7 +108,7 @@ module.exports = {
             damage = enemy.takeDamage(damage)
 
             let enemy_starting_damage = enemy.damage
-            enemy.damage = Math.max(enemy.damage, 0)
+            enemy.damage = Math.max(enemy.damage - 10, 0)
 
             myself.extraTurn += 2
 
@@ -124,7 +124,7 @@ module.exports = {
           let enemy_starting_resist = enemy.resist
           enemy.resist = 0
           myself.shatterCost = Infinity
-          return { status: 'success', type: 'debuff', buff: `-${enemy_starting_resist - enemy.resist}🛡` }
+          return { status: 'success', type: 'debuff', debuff: `-${enemy_starting_resist - enemy.resist}🛡` }
         }
       }
     ]
