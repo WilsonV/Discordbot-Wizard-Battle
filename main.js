@@ -11,10 +11,8 @@ const BattleBetweenUsers = require('./Util/userBattle');
 
 const prefix = '!'
 const Games = {};
-const randomMatchChannel = { channel: null };
+const randomMatch = { active: false, channel: null, MatchInterval: 30, KeepPlayersActive: 10 };
 const activePlayers = {}
-const MinutesToMarkPlayersActive = 10
-const MinutesBetweenRandomMatches = 30
 
 //Create Client Instance
 const client = new Discord.Client({
@@ -57,12 +55,12 @@ client.once('ready', () => {
   console.log("Wizard Battle Bot is online!")
 })
 
-const activePlayerTrackTimer = new TaskTimer(60000 * MinutesBetweenRandomMatches)
+const activePlayerTrackTimer = new TaskTimer(60000 * randomMatch.MatchInterval)
 
 //removes players after their time has expired
 activePlayerTrackTimer.on('tick', async () => {
 
-  if (!randomMatchChannel.channel) return
+  if (!randomMatch.active || !randomMatch.channel) return
 
   //console.log("Generating a random match...")
   const listOfPlayers = []
@@ -82,14 +80,14 @@ activePlayerTrackTimer.on('tick', async () => {
 
   //Run match if we have more than 1 player
   if (listOfPlayers.length > 1) {
-    console.log("attempting to start match, we have enough players")
+    //console.log("attempting to start match, we have enough players")
     const firstContestant = listOfPlayers.splice(Math.floor(Math.random() * listOfPlayers.length), 1)
     const secondContestant = listOfPlayers.splice(Math.floor(Math.random() * listOfPlayers.length), 1)
 
-    BattleBetweenUsers(firstContestant[0], secondContestant[0], randomMatchChannel, Games, Discord, client)
+    BattleBetweenUsers(firstContestant[0], secondContestant[0], randomMatch, Games, Discord, client)
   } else {
-    console.log("Not enough players to start a match")
-    console.log("list of players", listOfPlayers)
+    //console.log("Not enough players to start a match")
+    //console.log("list of players", listOfPlayers)
   }
 })
 
@@ -100,7 +98,7 @@ client.on('messageCreate', (message) => {
   try {
     //Random Matches registry
     if (!message.content.startsWith(prefix) && !message.author.bot) {
-      activePlayers[message.author.id] = Date.now() + (60000 * MinutesToMarkPlayersActive)
+      activePlayers[message.author.id] = Date.now() + (60000 * randomMatch.KeepPlayersActive)
     }
 
     //Command code behavior (prevents commands outside of match channel)
@@ -113,7 +111,7 @@ client.on('messageCreate', (message) => {
       if (client.commands.get(command).adminOnly && !message.member.permissions.has('ADMINISTRATOR')) {
         return message.reply('This is an admin on command, sorry.')
       }
-      client.commands.get(command).execute(Discord, client, message, args, Games, randomMatchChannel)
+      client.commands.get(command).execute(Discord, client, message, args, Games, randomMatch)
     } else if (client.characters.has(command)) {
 
       let currentCharacter = client.characters.get(command)

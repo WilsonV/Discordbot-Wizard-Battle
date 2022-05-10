@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'addchn',
+  name: 'setchn',
   adminOnly: true,
   description: 'sets the channel you are in as the place for battles.',
   execute(Discord, client, message, args, Games, randomMatchChannel) {
