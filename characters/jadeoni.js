@@ -40,9 +40,9 @@ module.exports = {
       {
         name: 'Regenerate',
         cost: 0,
-        effect: `+${2}${pipIconID} & +${2}🎯 & +${100}💖`,
+        effect: `+${4}${pipIconID} & +${2}🎯 & +${100}💖`,
         execute() {
-          let pipsGained = myself.addPips(2)
+          let pipsGained = myself.addPips(4)
           myself.maxHealth += 100
           let starting_accuracy = myself.accuracy
           myself.accuracy = Math.min(myself.accuracy + 2, 100)

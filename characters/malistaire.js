@@ -1,4 +1,5 @@
 const pipIconID = require('../pipIconID')
+//needs more pips
 module.exports = {
   name: 'Malistaire Drake',
   nickname: 'malistaire',
@@ -60,23 +61,23 @@ module.exports = {
       {
         name: 'Empower',
         cost: 0,
-        effect: `+${3}${pipIconID} & +${300}💚`,
+        effect: `+${6}${pipIconID} & +${200}💚`,
         execute() {
-          let pipsGained = myself.addPips(3)
-          let healed = myself.heal(300)
+          let pipsGained = myself.addPips(6)
+          let healed = myself.heal(200)
           return { status: 'success', type: 'restore', buff: `${healed}💚 & +${pipsGained}${pipIconID}` }
         }
       },
       {
         name: 'Plague Vampire',
         cost: 6,
-        effect: `${Math.floor(350 * (1 + (myself.damage / 100)))}💥, -${5}🎯 & -${3}🗡`,
+        effect: `${Math.floor(450 * (1 + (myself.damage / 100)))}💥, -${5}🎯 & -${3}🗡`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(350 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(450 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
             let healed = myself.heal(Math.floor(damage / 2))
             let enemy_starting_accuracy = enemy.accuracy
@@ -90,13 +91,13 @@ module.exports = {
       {
         name: `Wraith's Curse`,
         cost: 7,
-        effect: `${Math.floor(500 * (1 + (myself.damage / 100)))}💥 & Steal ${10}🗡`,
+        effect: `${Math.floor(700 * (1 + (myself.damage / 100)))}💥 & Steal ${10}🗡`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(500 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(700 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
             let healed = myself.heal(Math.floor(damage / 2))
 
@@ -111,18 +112,18 @@ module.exports = {
       {
         name: 'Skeletal Dragon Guardian',
         cost: 11,
-        effect: `${Math.floor(700 * (1 + (myself.damage / 100)))}💥 & +${15}🛡`,
+        effect: `${Math.floor(900 * (1 + (myself.damage / 100)))}💥 & +${5}🛡`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(700 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(900 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
             let healed = myself.heal(Math.floor(damage / 2))
 
             let starting_resist = myself.resist
-            myself.resist = Math.min(myself.resist + 15, 100)
+            myself.resist = Math.min(myself.resist + 5, 100)
 
             return { status: 'success', type: 'attack', damage, buff: `received +${healed}💚 & gained ${myself.resist - starting_resist}🛡` }
           }

@@ -43,9 +43,9 @@ module.exports = {
       {
         name: 'Helping Hand',
         cost: 0,
-        effect: `+${2}${pipIconID} & +${100}💚 & +${1}🗡`,
+        effect: `+${3}${pipIconID} & +${100}💚 & +${1}🗡`,
         execute() {
-          let pipsGained = myself.addPips(2)
+          let pipsGained = myself.addPips(3)
           let healed = myself.heal(100)
           myself.damage++
           return { status: 'success', type: 'restore', buff: `${healed}💚 & +${pipsGained}${pipIconID} & +${1}🗡` }
@@ -54,7 +54,7 @@ module.exports = {
       {
         name: 'Piercing Hydra',
         cost: 6,
-        effect: `${Math.floor(200 * (1 + (myself.damage / 100)))}💥 x3 & -${2}🛡 after each 💥`,
+        effect: `${Math.floor(250 * (1 + (myself.damage / 100)))}💥 x3 & -${2}🛡 after each 💥`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
@@ -62,15 +62,15 @@ module.exports = {
           } else {
             let enemy_starting_resist = enemy.resist
 
-            let damage = Math.floor(200 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(250 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
             enemy.resist = Math.max(enemy.resist - 2, 0)
 
-            let secondDamage = Math.floor(200 * (1 + (myself.damage / 100)))
+            let secondDamage = Math.floor(250 * (1 + (myself.damage / 100)))
             secondDamage = enemy.takeDamage(secondDamage)
             enemy.resist = Math.max(enemy.resist - 2, 0)
 
-            let thirdDamage = Math.floor(200 * (1 + (myself.damage / 100)))
+            let thirdDamage = Math.floor(250 * (1 + (myself.damage / 100)))
             thirdDamage = enemy.takeDamage(thirdDamage)
             enemy.resist = Math.max(enemy.resist - 2, 0)
 
@@ -81,7 +81,7 @@ module.exports = {
       {
         name: 'Ra',
         cost: 8,
-        effect: `${Math.floor(800 * (1 + (myself.damage / 100)))}💥 & -${1}${pipIconID}`,
+        effect: `${Math.floor(800 * (1 + (myself.damage / 100)))}💥 & -${2}${pipIconID}`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
@@ -91,7 +91,7 @@ module.exports = {
             damage = enemy.takeDamage(damage)
 
             let enemy_starting_pips = enemy.pips
-            enemy.pips = Math.max(enemy.pips - 1, 0)
+            enemy.pips = Math.max(enemy.pips - 2, 0)
             return { status: 'success', type: 'attack', damage, debuff: `-${enemy_starting_pips - enemy.pips}${pipIconID} on ${enemy.name}` }
           }
         }

@@ -34,7 +34,7 @@ module.exports = {
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(75 * myself.pips * (1 + (myself.damage / 100)))
+            let damage = Math.floor(65 * myself.pips * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
             let enemy_starting_resist = enemy.resist
             enemy.resist = Math.max(enemy.resist - 1, 0)
@@ -46,9 +46,9 @@ module.exports = {
       {
         name: 'Legendary Buff',
         cost: 0,
-        effect: `+${3}${pipIcon} & +${50}💚 & +${1}🗡`,
+        effect: `+${5}${pipIcon} & +${50}💚 & +${1}🗡`,
         execute() {
-          let pipsGained = myself.addPips(3)
+          let pipsGained = myself.addPips(5)
           let healed = myself.heal(50)
           myself.damage++
           return { status: 'success', type: 'restore', buff: `${healed}💚 & +${pipsGained}${pipIcon} & +${1}🗡` }
@@ -76,7 +76,7 @@ module.exports = {
       {
         name: 'Piercing Orthrus',
         cost: 8,
-        effect: `${Math.floor(200 * (1 + (myself.damage / 100)))}💥 & -${10}🛡 Then ${Math.floor(600 * (1 + (myself.damage / 100)))}💥`,
+        effect: `${Math.floor(200 * (1 + (myself.damage / 100)))}💥 & -${10}🛡 Then ${Math.floor(700 * (1 + (myself.damage / 100)))}💥`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
@@ -88,7 +88,7 @@ module.exports = {
             let enemy_starting_resist = enemy.resist
             enemy.resist = Math.max(enemy.resist - 10, 0)
 
-            let secondDamage = Math.floor(600 * (1 + (myself.damage / 100)))
+            let secondDamage = Math.floor(700 * (1 + (myself.damage / 100)))
             secondDamage = enemy.takeDamage(secondDamage)
 
             return { status: 'success', type: 'attack', damage, secondDamage, debuff: `applied -${enemy_starting_resist - enemy.resist}🛡 on ${enemy.name}` }
@@ -98,13 +98,13 @@ module.exports = {
       {
         name: 'Fearful Medusa',
         cost: 11,
-        effect: `${Math.floor(900 * (1 + (myself.damage / 100)))}💥 & -${10}🗡, gain ${2}🕑`,
+        effect: `${Math.floor(1100 * (1 + (myself.damage / 100)))}💥 & -${10}🗡, gain ${2}🕑`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(900 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(1100 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
 
             let enemy_starting_damage = enemy.damage

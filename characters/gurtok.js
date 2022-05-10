@@ -1,4 +1,5 @@
 const pipIcon = require('../pipIconID')
+//Pheonix more accessible
 module.exports = {
   name: 'Gurtok Firebender',
   nickname: 'gurtok',
@@ -41,9 +42,9 @@ module.exports = {
       {
         name: 'Re-Fuel',
         cost: 0,
-        effect: `+${2}${pipIcon} & +${150}💚`,
+        effect: `+${4}${pipIcon} & +${150}💚`,
         execute() {
-          let pipsGained = myself.addPips(2)
+          let pipsGained = myself.addPips(4)
           let healed = myself.heal(150)
           return { status: 'success', type: 'restore', buff: `${healed}💚 & +${pipsGained}${pipIcon}` }
         }
@@ -105,10 +106,10 @@ module.exports = {
       },
       {
         name: 'Everlasting Pheonix',
-        cost: (myself.health <= myself.maxHealth * .05) ? myself.pheonixCost : Infinity,
-        effect: `+${50}%💚 & +${6}${pipIcon} & +${50}🗡 (📋💚 < 5%)`,
+        cost: (myself.health <= myself.maxHealth * .2) ? myself.pheonixCost : Infinity,
+        effect: `+${50}%💚 & +${8}${pipIcon} & +${50}🗡 (📋💚 < 20%)`,
         execute() {
-          let pipsGained = myself.addPips(6)
+          let pipsGained = myself.addPips(8)
           let healed = myself.heal(Math.floor(myself.maxHealth * .5))
           myself.pheonixCost = Infinity
           return { status: 'success', type: 'restore', buff: `+${healed}💚 & +${pipsGained}${pipIcon}` }

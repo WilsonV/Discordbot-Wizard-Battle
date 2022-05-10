@@ -57,9 +57,9 @@ module.exports = {
       {
         name: 'Cool Down',
         cost: 0,
-        effect: `+${2}${pipIcon} & +${50}💖 & +${100}💚`,
+        effect: `+${4}${pipIcon} & +${50}💖 & +${100}💚`,
         execute() {
-          let pipsGained = myself.addPips(2)
+          let pipsGained = myself.addPips(4)
           let healed = myself.heal(100)
           myself.maxHealth += 50
           return { status: 'success', type: 'restore', buff: `${healed}💚 & +${pipsGained}${pipIcon} & +${50}💖` }
@@ -68,17 +68,17 @@ module.exports = {
       {
         name: 'Frozen Wyvern',
         cost: 5,
-        effect: `${Math.floor(350 * (1 + (myself.damage / 100)))}💥 & +${2}🗡 & +${2}🛡`,
+        effect: `${Math.floor(550 * (1 + (myself.damage / 100)))}💥 & +${3}🗡 & +${1}🛡`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(400 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(550 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
-            myself.damage += 2
+            myself.damage += 3
             let starting_resist = myself.resist
-            myself.resist = Math.min(myself.resist + 2, 100)
+            myself.resist = Math.min(myself.resist + 1, 100)
             return { status: 'success', type: 'attack', damage, buff: `received +${2}🗡 & +${myself.resist - starting_resist}🛡` }
           }
         }
@@ -86,13 +86,13 @@ module.exports = {
       {
         name: 'Thieving Colossus',
         cost: 7,
-        effect: `${Math.floor(700 * (1 + (myself.damage / 100)))}💥 & Steal ${5}🛡`,
+        effect: `${Math.floor(800 * (1 + (myself.damage / 100)))}💥 & Steal ${5}🛡`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(700 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(800 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
 
             let enemy_starting_resist = enemy.resist
@@ -106,13 +106,13 @@ module.exports = {
       {
         name: 'Frozen Ice Giant',
         cost: 10,
-        effect: `${Math.floor(1000 * (1 + (myself.damage / 100)))}💥 & +${200}💖 & +${30}🛡 for 3🕑`,
+        effect: `${Math.floor(1200 * (1 + (myself.damage / 100)))}💥 & +${200}💖 & +${30}🛡 for 3🕑`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(1000 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(1200 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
 
             myself.maxHealth += 200

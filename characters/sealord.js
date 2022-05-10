@@ -76,9 +76,9 @@ module.exports = {
       {
         name: 'Supercharge',
         cost: 0,
-        effect: `+${3}${pipIconID} & (+${200}💚 or +${3}🗡)`,
+        effect: `+${5}${pipIconID} & (+${200}💚 or +${3}🗡)`,
         execute() {
-          let pipsGained = myself.addPips(3)
+          let pipsGained = myself.addPips(5)
           let rndBuff = ''
           let amount = 0
           if (Math.floor(Math.random() * 2) < 1) {
@@ -95,14 +95,14 @@ module.exports = {
       {
         name: 'Darkwind Tempest',
         cost: 6,
-        effect: `+${5}🗡 Then ${Math.floor(480 * (1 + (myself.damage / 100)))}💥 & +${5}🎯`,
+        effect: `+${5}🗡 Then ${Math.floor(580 * (1 + (myself.damage / 100)))}💥 & +${5}🎯`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
             myself.damage += 5
-            let damage = Math.floor(480 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(580 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
             let starting_accuracy = myself.accuracy
             myself.accuracy = Math.min(myself.accuracy + 5, 100)
@@ -134,14 +134,14 @@ module.exports = {
       },
       {
         name: 'Unforgiving Storm Lord',
-        cost: 11,
-        effect: `${Math.floor(1200 * (1 + (myself.damage / 100)))}💥 & +${2}${pipIconID} & +${1}🕑`,
+        cost: 12,
+        effect: `${Math.floor(1400 * (1 + (myself.damage / 100)))}💥 & +${2}${pipIconID} & +${1}🕑`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(1200 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(1400 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
 
             let pipsGained = myself.addPips(2)
