@@ -5,7 +5,7 @@ module.exports = {
   imgURL: 'https://i.imgur.com/z9nA6pK.png',
   maxHealth: 2300,
   health: 2300,
-  pips: 5,
+  pips: 4,
   damage: 70,
   resist: 20,
   accuracy: 65,
@@ -183,8 +183,12 @@ module.exports = {
       }
     ]
   },
-  takeDamage: function (damage) {
-    damage = Math.floor(damage * (Math.min(Math.max(100 - this.resist, 0), 100) / 100))
+  takeDamage: function (damage, ignoreResist = false) {
+    if (ignoreResist) {
+      damage = Math.floor(damage)
+    } else {
+      damage = Math.floor(damage * (Math.min(Math.max(100 - this.resist, 0), 100) / 100))
+    }
     this.health = Math.max(this.health - damage, 0)
     return damage
   },

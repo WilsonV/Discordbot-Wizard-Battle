@@ -136,8 +136,12 @@ module.exports = {
       }
     ]
   },
-  takeDamage: function (damage) {
-    damage = Math.floor(damage * (Math.min(Math.max(100 - this.resist, 0), 100) / 100))
+  takeDamage: function (damage, ignoreResist = false) {
+    if (ignoreResist) {
+      damage = Math.floor(damage)
+    } else {
+      damage = Math.floor(damage * (Math.min(Math.max(100 - this.resist, 0), 100) / 100))
+    }
     this.health = Math.max(this.health - damage, 0)
     return damage
   },

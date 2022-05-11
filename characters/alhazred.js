@@ -9,14 +9,14 @@ module.exports = {
   pips: 5,
   damage: 50,
   resist: 35,
-  accuracy: 87,
+  accuracy: 103,
   blindJudgementCost: 0,
   fairJudgementCost: 0,
   passive: function () {
     this.addPips(3)
-    this.accuracy = Math.max(this.accuracy - 2, 0)
+    this.accuracy = Math.max(this.accuracy - 3, 0)
   },
-  passiveEffect: `+${3}${pipIconID} & -${2}🎯`,
+  passiveEffect: `+${3}${pipIconID} & -${3}🎯`,
   abilityMissed: function () {
     if (this.accuracy >= Math.floor(Math.random() * 101)) return false
     return true
@@ -176,8 +176,12 @@ module.exports = {
       }
     ]
   },
-  takeDamage: function (damage) {
-    damage = Math.floor(damage * (Math.min(Math.max(100 - this.resist, 0), 100) / 100))
+  takeDamage: function (damage, ignoreResist = false) {
+    if (ignoreResist) {
+      damage = Math.floor(damage)
+    } else {
+      damage = Math.floor(damage * (Math.min(Math.max(100 - this.resist, 0), 100) / 100))
+    }
     this.health = Math.max(this.health - damage, 0)
     return damage
   },

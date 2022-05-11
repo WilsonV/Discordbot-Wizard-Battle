@@ -3,7 +3,7 @@ const progressbar = require('./Util/progressBar')
 const pipIconID = require("./pipIconID")
 
 module.exports = {
-  characterSheetURL: 'https://i.imgur.com/vw5yben.png',
+  characterSheetURL: 'https://i.imgur.com/WSUtfNP.png',
   status: GameStatus.WAITING_TO_ACCEPT,
   player1: { id: null, username: '', displayAvatarURL: '', character: null },
   player2: { id: null, username: '', displayAvatarURL: '', character: null },
@@ -189,7 +189,7 @@ module.exports = {
                   Math.random() > .5 ? await winningMessage.react('🤣') : await winningMessage.react('😏')
 
                 } else if (player.character.health > player.character.maxHealth * .1 || enemy.character.health > enemy.character.maxHealth * .1) {
-                  await winningMessage.react('😨')
+                  await winningMessage.react('😝')
                   winningMessage.react('🔥')
                 } else {
                   winningMessage.react('🔥')

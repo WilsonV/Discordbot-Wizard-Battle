@@ -61,9 +61,9 @@ module.exports = {
       {
         name: 'Empower',
         cost: 0,
-        effect: `+${6}${pipIconID} & +${200}💚`,
+        effect: `+${5}${pipIconID} & +${200}💚`,
         execute() {
-          let pipsGained = myself.addPips(6)
+          let pipsGained = myself.addPips(5)
           let healed = myself.heal(200)
           return { status: 'success', type: 'restore', buff: `${healed}💚 & +${pipsGained}${pipIconID}` }
         }
@@ -132,20 +132,24 @@ module.exports = {
       {
         name: 'Funeral Ceremony',
         cost: myself.funeralCeremony.cost,
-        effect: `lose ${50}%💚 and ${50}%💖, in ${5}🕑 gain +${50}🗡, +${4}${pipIconID} & enemy loses all 🗡 and 🛡`,
+        effect: `lose ${50}%💚 and ${50}%💖, in ${4}🕑 gain +${50}🗡, +${8}${pipIconID} & enemy loses all 🗡 and 🛡`,
         execute(enemy) {
-          myself.funeralCeremony = { active: true, cost: Infinity, turnsLeft: 5, damage: 50, pips: 4 }
+          myself.funeralCeremony = { active: true, cost: Infinity, turnsLeft: 4, damage: 50, pips: 8 }
           let starting_health = myself.health
           let starting_maxhealth = myself.maxHealth
           myself.health = Math.floor(myself.health / 2)
           myself.maxHealth = Math.floor(myself.maxHealth / 2)
-          return { status: 'success', type: 'buff', buff: `lost ${starting_health - myself.health}💚 & ${starting_maxhealth - myself.maxHealth}💖, will gain ${50}🗡 & ${4}${pipIconID} in ${5}🕑 & ${enemy.name} will lose all 🗡 and 🛡 in ${5}🕑` }
+          return { status: 'success', type: 'buff', buff: `lost ${starting_health - myself.health}💚 & ${starting_maxhealth - myself.maxHealth}💖, will gain ${myself.funeralCeremony.damage}🗡 & ${myself.funeralCeremony.pips}${pipIconID} in ${myself.funeralCeremony.turnsLeft}🕑 & ${enemy.name} will lose all 🗡 and 🛡 in ${myself.funeralCeremony.turnsLeft}🕑` }
         }
       }
     ]
   },
-  takeDamage: function (damage) {
-    damage = Math.floor(damage * (Math.min(Math.max(100 - this.resist, 0), 100) / 100))
+  takeDamage: function (damage, ignoreResist = false) {
+    if (ignoreResist) {
+      damage = Math.floor(damage)
+    } else {
+      damage = Math.floor(damage * (Math.min(Math.max(100 - this.resist, 0), 100) / 100))
+    }
     this.health = Math.max(this.health - damage, 0)
     return damage
   },

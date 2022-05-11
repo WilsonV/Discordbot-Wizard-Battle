@@ -1,16 +1,16 @@
-const pipIcon = require('../pipIconID')
+const pipIconID = require('../pipIconID')
 module.exports = {
   name: 'Lydia Greyrose',
   nickname: 'lydia',
   imgURL: 'https://i.imgur.com/LUGZvy7.jpg',
   maxHealth: 4000,
   health: 4000,
-  pips: 6,
+  pips: 5,
   damage: 30,
   resist: 40,
   accuracy: 80,
   frozenGiantBoost: { active: false, turnsLeft: 0, resist: 0 },
-  iceAgeCost: 0,
+  iceAgeCost: 6,
   passive: function () {
     this.heal(50)
 
@@ -57,12 +57,12 @@ module.exports = {
       {
         name: 'Cool Down',
         cost: 0,
-        effect: `+${4}${pipIcon} & +${50}💖 & +${100}💚`,
+        effect: `+${3}${pipIconID} & +${50}💖 & +${100}💚`,
         execute() {
-          let pipsGained = myself.addPips(4)
+          let pipsGained = myself.addPips(3)
           let healed = myself.heal(100)
           myself.maxHealth += 50
-          return { status: 'success', type: 'restore', buff: `${healed}💚 & +${pipsGained}${pipIcon} & +${50}💖` }
+          return { status: 'success', type: 'restore', buff: `${healed}💚 & +${pipsGained}${pipIconID} & +${50}💖` }
         }
       },
       {
@@ -126,26 +126,30 @@ module.exports = {
         }
       },
       {
-        name: 'Ice Age',
+        name: 'Thaw',
         cost: myself.iceAgeCost,
-        effect: `convert ${50}%🛡 -> 🗡, +${300}💖 & +${300}💚`,
+        effect: `convert all 🛡 -> 🗡, +${10}${pipIconID}`,
         execute() {
 
-          let deduct = Math.floor(myself.resist / 2)
+          let deduct = myself.resist
 
-          myself.resist -= deduct
+          myself.resist = 0
           myself.damage += deduct
 
-          myself.maxHealth += 300
-          let healed = myself.heal(300)
+          let pipsGained = myself.addPips(10)
+
           myself.iceAgeCost = Infinity
-          return { status: 'success', type: 'restore', buff: `+${300}💖 & +${healed}💚 & -${deduct}🛡 & +${deduct}🗡` }
+          return { status: 'success', type: 'restore', buff: `+${pipsGained}${pipIconID} & -${deduct}🛡 & +${deduct}🗡` }
         }
       }
     ]
   },
-  takeDamage: function (damage) {
-    damage = Math.floor(damage * (Math.min(Math.max(100 - this.resist, 0), 100) / 100))
+  takeDamage: function (damage, ignoreResist = false) {
+    if (ignoreResist) {
+      damage = Math.floor(damage)
+    } else {
+      damage = Math.floor(damage * (Math.min(Math.max(100 - this.resist, 0), 100) / 100))
+    }
     this.health = Math.max(this.health - damage, 0)
     return damage
   },
