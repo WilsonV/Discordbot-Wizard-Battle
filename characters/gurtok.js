@@ -52,13 +52,13 @@ module.exports = {
       {
         name: 'Burning Meteor',
         cost: 5,
-        effect: `${Math.floor(400 * (1 + (myself.damage / 100)))}💥 & +${5}🗡`,
+        effect: `${Math.floor(750 * (1 + (myself.damage / 100)))}💥 & +${5}🗡`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(400 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(750 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
             myself.damage += 5
             return { status: 'success', type: 'attack', damage, buff: `received +${5}🗡` }
@@ -68,7 +68,7 @@ module.exports = {
       {
         name: 'Smoking Immolate',
         cost: 7,
-        effect: `Take ${Math.floor(300 * (1 + (myself.damage / 100)))}💥 & Deal ${Math.floor(800 * (1 + (myself.damage / 100)))}💥 & -${5}🎯`,
+        effect: `Take ${Math.floor(300 * (1 + (myself.damage / 100)))}💥 & Deal ${Math.floor(950 * (1 + (myself.damage / 100)))}💥 & -${5}🎯`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
@@ -77,7 +77,7 @@ module.exports = {
             let selfDamage = Math.floor(300 * (1 + (myself.damage / 100)))
             selfDamage = myself.takeDamage(selfDamage)
 
-            let damage = Math.floor(800 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(950 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
 
             let enemy_starting_accuracy = enemy.accuracy

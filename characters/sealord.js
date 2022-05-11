@@ -113,7 +113,7 @@ module.exports = {
       {
         name: `The Kraken's Wrath`,
         cost: 7,
-        effect: `${Math.floor(850 * (1 + (myself.damage / 100)))}💥 & -${10}🎯 & -${10}🗡`,
+        effect: `${Math.floor(850 * (1 + (myself.damage / 100)))}💥 & -${2}🎯 & -${5}🗡`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
@@ -123,10 +123,10 @@ module.exports = {
             damage = enemy.takeDamage(damage)
 
             let enemy_starting_accuracy = enemy.accuracy
-            enemy.accuracy = Math.max(enemy.accuracy - 10, 0)
+            enemy.accuracy = Math.max(enemy.accuracy - 2, 0)
 
             let enemy_starting_damage = enemy.damage
-            enemy.damage = Math.max(enemy.damage - 10, 0)
+            enemy.damage = Math.max(enemy.damage - 5, 0)
 
             return { status: 'success', type: 'attack', damage, debuff: `applied ${enemy.accuracy - enemy_starting_accuracy}🎯 & ${enemy.damage - enemy_starting_damage}🗡 on ${enemy.name}` }
           }
