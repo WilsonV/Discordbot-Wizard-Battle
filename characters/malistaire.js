@@ -4,8 +4,8 @@ module.exports = {
   name: 'Malistaire Drake',
   nickname: 'malistaire',
   imgURL: 'https://i.imgur.com/726wGkw.png',
-  maxHealth: 3300,
-  health: 3300,
+  maxHealth: 6300,
+  health: 6300,
   pips: 3,
   damage: 45,
   resist: 35,
@@ -61,17 +61,16 @@ module.exports = {
       {
         name: 'Empower',
         cost: 0,
-        effect: `+${5}${pipIconID} & +${200}💚`,
+        effect: `+${5}${pipIconID}`,
         execute() {
           let pipsGained = myself.addPips(5)
-          let healed = myself.heal(200)
-          return { status: 'success', type: 'restore', buff: `${healed}💚 & +${pipsGained}${pipIconID}` }
+          return { status: 'success', type: 'restore', buff: `+${pipsGained}${pipIconID}` }
         }
       },
       {
         name: 'Plague Vampire',
         cost: 6,
-        effect: `${Math.floor(450 * (1 + (myself.damage / 100)))}💥, -${5}🎯 & -${3}🗡`,
+        effect: `${Math.floor(450 * (1 + (myself.damage / 100)))}💥, -${3}🎯 & -${2}🗡`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
@@ -81,9 +80,9 @@ module.exports = {
             damage = enemy.takeDamage(damage)
             let healed = myself.heal(Math.floor(damage / 2))
             let enemy_starting_accuracy = enemy.accuracy
-            enemy.accuracy = Math.max(enemy.accuracy - 5, 0)
+            enemy.accuracy = Math.max(enemy.accuracy - 3, 0)
             let enemy_starting_damage = enemy.damage
-            enemy.damage = Math.max(enemy.damage - 5, 0)
+            enemy.damage = Math.max(enemy.damage - 2, 0)
             return { status: 'success', type: 'attack', damage, buff: `received ${healed}💚, applied ${enemy.accuracy - enemy_starting_accuracy}🎯 & ${enemy.damage - enemy_starting_damage}🗡` }
           }
         }
@@ -91,7 +90,7 @@ module.exports = {
       {
         name: `Wraith's Curse`,
         cost: 7,
-        effect: `${Math.floor(700 * (1 + (myself.damage / 100)))}💥 & Steal ${10}🗡`,
+        effect: `${Math.floor(700 * (1 + (myself.damage / 100)))}💥 & Steal ${5}🗡`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
@@ -103,7 +102,7 @@ module.exports = {
 
             let enemy_starting_damage = enemy.damage
             let starting_damage = myself.damage
-            enemy.damage = Math.max(enemy.damage - 10, 0)
+            enemy.damage = Math.max(enemy.damage - 5, 0)
             myself.damage += (enemy_starting_damage - enemy.damage)
             return { status: 'success', type: 'attack', damage, debuff: `received +${healed}💚 & stole ${enemy_starting_damage - enemy.damage}🗡 from ${enemy.name} and gained ${myself.damage - starting_damage}🗡` }
           }
@@ -132,9 +131,9 @@ module.exports = {
       {
         name: 'Funeral Ceremony',
         cost: myself.funeralCeremony.cost,
-        effect: `lose ${50}%💚 and ${50}%💖, in ${4}🕑 gain +${50}🗡, +${8}${pipIconID} & enemy loses all 🗡 and 🛡`,
+        effect: `lose ${50}%💚 and ${50}%💖, in ${5}🕑 gain +${50}🗡, +${8}${pipIconID} & enemy loses all 🗡 and 🛡`,
         execute(enemy) {
-          myself.funeralCeremony = { active: true, cost: Infinity, turnsLeft: 4, damage: 50, pips: 8 }
+          myself.funeralCeremony = { active: true, cost: Infinity, turnsLeft: 5, damage: 50, pips: 8 }
           let starting_health = myself.health
           let starting_maxhealth = myself.maxHealth
           myself.health = Math.floor(myself.health / 2)

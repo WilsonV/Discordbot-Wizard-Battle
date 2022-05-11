@@ -97,7 +97,7 @@ module.exports = {
     const characterList = new Discord.MessageEmbed()
       .setColor('#00ff00')
       .setTitle('Select a character')
-      .setDescription(`<@${this.player1.id}> select a character using their name`)
+      .setDescription(`<@${this.player1.id}> select a character using their name (no space)`)
       .setImage(this.characterSheetURL)
 
     await this.thread.send({ embeds: [characterList] })
@@ -107,7 +107,14 @@ module.exports = {
     //collector.status = this.status
 
     collector.on('collect', async (msg) => {
-      const response = msg.content.toLowerCase()
+      let response = msg.content.toLowerCase()
+
+      if (response === 'random') {
+        //make an array of all the characters
+        const availableCharacters = Array.from(client.characters.keys())
+        //select one at random and make that the response
+        response = availableCharacters[Math.floor(Math.random() * availableCharacters.length)]
+      }
 
       //Make sure we take response from the right player
       if (this.status === GameStatus.PLAYER1_CHAR_SELECT && msg.author.id === this.player1.id) {

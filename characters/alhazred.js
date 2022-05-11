@@ -4,8 +4,8 @@ module.exports = {
   name: 'Alhazred',
   nickname: 'alhazred',
   imgURL: 'https://i.imgur.com/QzDYq3G.png',
-  maxHealth: 3500,
-  health: 3500,
+  maxHealth: 6500,
+  health: 6500,
   pips: 5,
   damage: 50,
   resist: 35,
@@ -54,7 +54,7 @@ module.exports = {
       {
         name: 'Piercing Hydra',
         cost: 6,
-        effect: `${Math.floor(250 * (1 + (myself.damage / 100)))}💥 x3 & -${2}🛡 after each 💥`,
+        effect: `${Math.floor(250 * (1 + (myself.damage / 100)))}💥 x3 & -${3}🛡 after each 💥`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
@@ -64,15 +64,15 @@ module.exports = {
 
             let damage = Math.floor(250 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
-            enemy.resist = Math.max(enemy.resist - 2, 0)
+            enemy.resist = Math.max(enemy.resist - 3, 0)
 
             let secondDamage = Math.floor(250 * (1 + (myself.damage / 100)))
             secondDamage = enemy.takeDamage(secondDamage)
-            enemy.resist = Math.max(enemy.resist - 2, 0)
+            enemy.resist = Math.max(enemy.resist - 3, 0)
 
             let thirdDamage = Math.floor(250 * (1 + (myself.damage / 100)))
             thirdDamage = enemy.takeDamage(thirdDamage)
-            enemy.resist = Math.max(enemy.resist - 2, 0)
+            enemy.resist = Math.max(enemy.resist - 3, 0)
 
             return { status: 'success', type: 'attack', damage, secondDamage, thirdDamage, debuff: ` & ${enemy_starting_resist - enemy.resist}🛡 on ${enemy.name}` }
           }

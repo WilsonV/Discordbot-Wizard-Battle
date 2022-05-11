@@ -4,9 +4,9 @@ module.exports = {
   name: 'Gurtok Firebender',
   nickname: 'gurtok',
   imgURL: 'https://i.imgur.com/XloQdIC.png',
-  maxHealth: 2800,
-  health: 2800,
-  pips: 7,
+  maxHealth: 5800,
+  health: 5800,
+  pips: 2,
   damage: 65,
   resist: 30,
   accuracy: 75,
@@ -68,7 +68,7 @@ module.exports = {
       {
         name: 'Smoking Immolate',
         cost: 7,
-        effect: `Take ${Math.floor(300 * (1 + (myself.damage / 100)))}💥 & Deal ${Math.floor(800 * (1 + (myself.damage / 100)))}💥 & -${10}🎯`,
+        effect: `Take ${Math.floor(300 * (1 + (myself.damage / 100)))}💥 & Deal ${Math.floor(800 * (1 + (myself.damage / 100)))}💥 & -${5}🎯`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
@@ -81,7 +81,7 @@ module.exports = {
             damage = enemy.takeDamage(damage)
 
             let enemy_starting_accuracy = enemy.accuracy
-            enemy.accuracy = Math.max(enemy.accuracy - 10, 0)
+            enemy.accuracy = Math.max(enemy.accuracy - 5, 0)
             return { status: 'success', type: 'attack', damage, debuff: `You took ${selfDamage}💥 & applied ${enemy.accuracy - enemy_starting_accuracy}🎯 on ${enemy.name}` }
           }
         }
@@ -89,7 +89,7 @@ module.exports = {
       {
         name: 'Burning Dragon',
         cost: 10,
-        effect: `${Math.floor(1000 * (1 + (myself.damage / 100)))}💥 & -${10}🛡 & +${10}🗡`,
+        effect: `${Math.floor(1000 * (1 + (myself.damage / 100)))}💥 & -${25}🛡 & +${20}🗡`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
@@ -97,9 +97,9 @@ module.exports = {
           } else {
             let damage = Math.floor(1000 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
-            myself.damage += 10
+            myself.damage += 20
             let enemy_starting_resist = enemy.resist
-            enemy.resist = Math.max(enemy.resist - 10, 0)
+            enemy.resist = Math.max(enemy.resist - 25, 0)
             return { status: 'success', type: 'attack', damage, buff: `received +${10}🗡`, debuff: `applied ${enemy.resist - enemy_starting_resist}🛡 on ${enemy.name}` }
           }
         }

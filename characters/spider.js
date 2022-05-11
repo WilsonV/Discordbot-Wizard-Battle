@@ -3,10 +3,10 @@ module.exports = {
   name: 'Grandfather Spider',
   nickname: 'spider',
   imgURL: 'https://i.imgur.com/2nUwJXf.png',
-  maxHealth: 3800,
-  health: 3800,
-  pips: 1,
-  damage: 60,
+  maxHealth: 6000,
+  health: 6000,
+  pips: 5,
+  damage: 0,
   resist: 30,
   accuracy: 75,
   extraTurn: 0,
@@ -16,7 +16,7 @@ module.exports = {
   passive: function (enemy) {
 
     //do damage
-    let damage = enemy.takeDamage(Math.floor(100 * this.damage))
+    let damage = enemy.takeDamage(Math.floor(100 * (1 + (this.damage / 100))))
 
     if (this.spinTheWheel.turnsToActive > 0) {
       this.spinTheWheel.turnsToActive--
@@ -28,7 +28,7 @@ module.exports = {
 
     return `You've hit ${enemy.name} for ${damage}💥`
   },
-  passiveEffect: `Hit enemy for ${Math.floor(100 * this.damage)}💥`,
+  passiveEffect: function () { return `Hit enemy for ${Math.floor(100 * (1 + (this.damage / 100)))}💥` },
   abilityMissed: function () {
     if (this.accuracy >= Math.floor(Math.random() * 101)) return false
     return true
@@ -61,12 +61,14 @@ module.exports = {
       {
         name: 'Shadow Deal',
         cost: 0,
-        effect: `+${6}${pipIconID} & -${200}💚`,
+        effect: `+${5}${pipIconID} & -${Math.floor(200 * (1 + (myself.damage / 100)))}💚 & +${10}🗡`,
         execute() {
-          let pipsGained = myself.addPips(6)
-          myself.health -= 200
+          let damage = Math.floor(200 * (1 + (myself.damage / 100)))
+          let pipsGained = myself.addPips(5)
+          myself.health -= damage
+          myself.damage += 10
 
-          return { status: 'success', type: 'buff', buff: `gained ${amount}${rndBuff} & lost ${200}💚` }
+          return { status: 'success', type: 'buff', buff: `gained ${pipsGained}${pipIconID} +${10}🗡 & lost ${damage}💚 ` }
         }
       },
       {
@@ -98,13 +100,13 @@ module.exports = {
       {
         name: `Kraken's Destruction`,
         cost: 7,
-        effect: `${Math.floor(500 * (1 + (myself.damage / 100)))}💥 (Ignores Resist)`,
+        effect: `${Math.floor(700 * (1 + (myself.damage / 100)))}💥 (Ignores Resist)`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(500 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(700 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage, true)
 
             return { status: 'success', type: 'attack', damage }
@@ -113,14 +115,14 @@ module.exports = {
       },
       {
         name: 'Shadow-Enfused Storm Lord',
-        cost: 11,
-        effect: `${Math.floor(1600 * (1 + (myself.damage / 100)))}💥`,
+        cost: 10,
+        effect: `${Math.floor(1300 * (1 + (myself.damage / 100)))}💥`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(1600 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(1300 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
             return { status: 'success', type: 'attack', damage }
           }

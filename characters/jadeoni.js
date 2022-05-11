@@ -3,8 +3,8 @@ module.exports = {
   name: 'Jade Oni',
   nickname: 'jadeoni',
   imgURL: 'https://i.imgur.com/yA0bnZz.png',
-  maxHealth: 3500,
-  health: 3500,
+  maxHealth: 6500,
+  health: 6500,
   pips: 4,
   damage: 30,
   resist: 20,
@@ -86,13 +86,13 @@ module.exports = {
       {
         name: `Dryad's Sanctuary`,
         cost: myself.dryadSanctuaryCost,
-        effect: `${Math.floor(550 * (1 + (myself.damage / 100)))}💥 & +${10}🛡 & +${30}% healing boost`,
+        effect: `${Math.floor(700 * (1 + (myself.damage / 100)))}💥 & +${10}🛡 & +${30}% healing boost`,
         execute(enemy) {
           myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(550 * (1 + (myself.damage / 100)))
+            let damage = Math.floor(700 * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
 
             let starting_resist = myself.resist
