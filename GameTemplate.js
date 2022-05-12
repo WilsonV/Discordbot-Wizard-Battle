@@ -158,6 +158,21 @@ module.exports = {
           player = this.player2
           enemy = this.player1
         }
+        //If the user flee
+        if (response === '!flee') {
+          player.character.health = 0
+          await this.thread.send(`${player.username} has fleed!`)
+          winningMessage = await this.thread.send(`🏆🏆${enemy.username} Has Won!🏆🏆`)
+          await winningMessage.react('😔')
+
+          this.status = GameStatus.COMPLETED
+          collector.stop('finished')
+          this.thread.send('This thread is deleting in 60s')
+          setTimeout(async () => {
+            this.thread.delete()
+          }, 60000)
+          return
+        }
         const choice = Number(response)
 
         if (!isNaN(choice)) {
