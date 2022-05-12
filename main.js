@@ -102,7 +102,7 @@ client.on('messageCreate', (message) => {
     }
 
     //Command code behavior (prevents commands outside of match channel)
-    if (!message.content.startsWith(prefix) || message.author.bot || message.toLowerCase() === '!flee') return;
+    if (!message.content.startsWith(prefix) || message.author.bot || message.content.toLowerCase() === '!flee') return;
 
     const args = message.content.slice(prefix.length).split(" ");
     const command = args.shift().toLowerCase();
