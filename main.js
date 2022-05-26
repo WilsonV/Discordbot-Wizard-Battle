@@ -97,10 +97,7 @@ client.once('ready', async () => {
       //console.log(guild.id, ":", randomMatch[guild.id])
       if (randomMatch[guild.id]) {
         //client.channels.cache.get(randomMatch[guild.id].battleChannel).send("Wizard Battle Bot is online!")
-        randomMatch[guild.id].activePlayers = {}
-        randomMatch[guild.id].activePlayerTrackTimer = new TaskTimer(60000 * randomMatch[guild.id].matchInterval)
-        randomMatch[guild.id].activePlayerTrackTimer.on('tick', () => randomMatchTimerEnd(guild.id))
-        randomMatch[guild.id].activePlayerTrackTimer.start()
+        activateTimer(guild.id)
       }
     })
     //console.log("Finished loading list", randomMatch)
@@ -108,8 +105,14 @@ client.once('ready', async () => {
     console.log(error)
   }
 
-
 })
+
+function activateTimer(guildId) {
+  randomMatch[guildId].activePlayers = {}
+  randomMatch[guildId].activePlayerTrackTimer = new TaskTimer(60000 * randomMatch[guildId].matchInterval)
+  randomMatch[guildId].activePlayerTrackTimer.on('tick', () => randomMatchTimerEnd(guildId))
+  randomMatch[guildId].activePlayerTrackTimer.start()
+}
 
 // client.on('guildCreate', (guild) => {
 //   console.log("I have joined a new server!")
@@ -213,3 +216,7 @@ client.on('messageCreate', (message) => {
 })
 
 client.login(process.env.BOT_KEY)
+
+module.exports = {
+  activateTimer
+}

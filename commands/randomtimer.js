@@ -14,6 +14,12 @@ module.exports = {
 
       await Server.update({ matchInterval: args[0] }, { where: { serverID: message.guildId } })
       randomMatch[message.guildId].matchInterval = args[0]
+
+      //update task timer
+      if (randomMatch[message.guildId].activePlayerTrackTimer) {
+        randomMatch[message.guildId].activePlayerTrackTimer.interval = 60000 * args[0]
+      }
+
       message.reply(`A random match will now occur every ${randomMatch[message.guildId].matchInterval} minute(s)${!randomMatch[message.guildId].active ? '\n**Warning** Random battles are currently off.' : ''}`)
     } catch (error) {
       console.log(error)
