@@ -4,10 +4,10 @@ const GameTemplate = require("../GameTemplate")
 module.exports = {
   name: 'challenge',
   description: 'challenge a player to a battle!',
-  async execute(Discord, client, message, args, Games, randomMatchChannel) {
+  async execute(Discord, client, message, args, Games, randomMatch) {
     try {
-      if (!randomMatchChannel.channel) return message.reply("A battle channel has not be set, get an admin to set one")
-      if (message.channel !== randomMatchChannel.channel) return message.reply(`This is not where you challenge people, try #${randomMatchChannel.channel.name}`)
+      if (!randomMatch[message.guildId]) return message.reply("A battle channel has not be set, get an admin to set one")
+      if (message.channelId !== randomMatch[message.guildId].battleChannel) return message.reply(`This is not where you challenge people, try ${message.guild.channels.cache.get(randomMatch[message.guildId].battleChannel).toString()}`)
       if (message.channel.isThread()) return message.reply("You can't challenge someone inside a thread.")
       if (message.mentions.users.size < 1) return message.reply("Challenge Who? Mention a person to challenge!")
       let userToChallenge = message.mentions.users.first()

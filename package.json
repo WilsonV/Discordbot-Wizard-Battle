@@ -11,6 +11,8 @@
   "dependencies": {
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
+    "pg": "^8.7.3",
+    "sequelize": "^6.20.0",
     "tasktimer": "^3.0.0"
   }
 }

@@ -1,3 +1,5 @@
+const dbConnection = require('./db/connect')()
+const { models: { Server } } = require('./db')
 const Discord = require('discord.js')
 const fs = require("fs");
 //const progressbar = require('string-progressbar')
@@ -11,8 +13,9 @@ const BattleBetweenUsers = require('./Util/userBattle');
 
 const prefix = '!'
 const Games = {};
-const randomMatch = { active: false, channel: null, MatchInterval: 30, KeepPlayersActive: 10 };
-const activePlayers = {}
+//const randomMatchTemplate = { active: false, channel: null, MatchInterval: 30, KeepPlayersActive: 10 };
+const randomMatch = {};
+//const activePlayers = {}
 
 //Create Client Instance
 const client = new Discord.Client({
@@ -49,29 +52,20 @@ for (const file of characterFiles) {
   client.characters.set(character.nickname, character);
 }
 
+async function randomMatchTimerEnd(guildId) {
 
-
-client.once('ready', () => {
-  console.log("Wizard Battle Bot is online!")
-})
-
-const activePlayerTrackTimer = new TaskTimer(60000 * randomMatch.MatchInterval)
-
-//removes players after their time has expired
-activePlayerTrackTimer.on('tick', async () => {
-
-  if (!randomMatch.active || !randomMatch.channel) return
+  if (!randomMatch[guildId].active || !randomMatch[guildId].battleChannel) return
 
   //console.log("Generating a random match...")
   const listOfPlayers = []
 
   //Remove inactive players
-  for (const player in activePlayers) {
+  for (const player in randomMatch[guildId].activePlayers) {
     // console.log("updating info for",player)
     // console.log("listed time is",activePlayers[player],", time now is",Date.now())
-    if (activePlayers[player] < Date.now()) {
+    if (randomMatch[guildId].activePlayers[player] < Date.now()) {
       //console.log("deleting",player,"from list of active")
-      delete activePlayers[player]
+      delete randomMatch[guildId].activePlayers[player]
     } else {
       //console.log("adding",player,"as match candidate")
       listOfPlayers.push(player)
@@ -84,21 +78,89 @@ activePlayerTrackTimer.on('tick', async () => {
     const firstContestant = listOfPlayers.splice(Math.floor(Math.random() * listOfPlayers.length), 1)
     const secondContestant = listOfPlayers.splice(Math.floor(Math.random() * listOfPlayers.length), 1)
 
-    BattleBetweenUsers(firstContestant[0], secondContestant[0], randomMatch, Games, Discord, client)
+    BattleBetweenUsers(firstContestant[0], secondContestant[0], randomMatch[guildId], Games, Discord, client)
   } else {
     //console.log("Not enough players to start a match")
     //console.log("list of players", listOfPlayers)
   }
+}
+
+client.once('ready', async () => {
+
+  try {
+    console.log("Wizard Battle Bot is online!")
+
+    //Load up server and their battle channel
+    //console.log("Loading Guild List settings")
+    client.guilds.cache.each(async (guild) => {
+      randomMatch[guild.id] = await Server.findOne({ where: { serverID: guild.id }, attributes: { exclude: ['id'] }, raw: true })
+      //console.log(guild.id, ":", randomMatch[guild.id])
+      if (randomMatch[guild.id]) {
+        //client.channels.cache.get(randomMatch[guild.id].battleChannel).send("Wizard Battle Bot is online!")
+        randomMatch[guild.id].activePlayers = {}
+        randomMatch[guild.id].activePlayerTrackTimer = new TaskTimer(60000 * randomMatch[guild.id].matchInterval)
+        randomMatch[guild.id].activePlayerTrackTimer.on('tick', () => randomMatchTimerEnd(guild.id))
+        randomMatch[guild.id].activePlayerTrackTimer.start()
+      }
+    })
+    //console.log("Finished loading list", randomMatch)
+  } catch (error) {
+    console.log(error)
+  }
+
+
 })
 
-activePlayerTrackTimer.start()
+// client.on('guildCreate', (guild) => {
+//   console.log("I have joined a new server!")
+//   console.log(guild.name, ":", guild.id)
+// })
+
+// const activePlayerTrackTimer = new TaskTimer(60000 * randomMatch.MatchInterval)
+
+//removes players after their time has expired
+// activePlayerTrackTimer.on('tick', async () => {
+
+//   if (!randomMatch.active || !randomMatch.channel) return
+
+//   //console.log("Generating a random match...")
+//   const listOfPlayers = []
+
+//   //Remove inactive players
+//   for (const player in activePlayers) {
+//     // console.log("updating info for",player)
+//     // console.log("listed time is",activePlayers[player],", time now is",Date.now())
+//     if (activePlayers[player] < Date.now()) {
+//       //console.log("deleting",player,"from list of active")
+//       delete activePlayers[player]
+//     } else {
+//       //console.log("adding",player,"as match candidate")
+//       listOfPlayers.push(player)
+//     }
+//   }
+
+//   //Run match if we have more than 1 player
+//   if (listOfPlayers.length > 1) {
+//     //console.log("attempting to start match, we have enough players")
+//     const firstContestant = listOfPlayers.splice(Math.floor(Math.random() * listOfPlayers.length), 1)
+//     const secondContestant = listOfPlayers.splice(Math.floor(Math.random() * listOfPlayers.length), 1)
+
+//     BattleBetweenUsers(firstContestant[0], secondContestant[0], randomMatch, Games, Discord, client)
+//   } else {
+//     //console.log("Not enough players to start a match")
+//     //console.log("list of players", listOfPlayers)
+//   }
+// })
+
+//activePlayerTrackTimer.start()
 
 client.on('messageCreate', (message) => {
 
   try {
     //Random Matches registry
-    if (!message.content.startsWith(prefix) && !message.author.bot) {
-      activePlayers[message.author.id] = Date.now() + (60000 * randomMatch.KeepPlayersActive)
+    if (!message.content.startsWith(prefix) && !message.author.bot && randomMatch[message.guildId]) {
+      randomMatch[message.guildId].activePlayers[message.author.id] = Date.now() + (60000 * randomMatch[message.guildId].keepPlayersActive)
+      //console.log("updated active player", randomMatch[message.guildId].activePlayers)
     }
 
     //Command code behavior (prevents commands outside of match channel)
@@ -111,7 +173,7 @@ client.on('messageCreate', (message) => {
       if (client.commands.get(command).adminOnly && !message.member.permissions.has('ADMINISTRATOR')) {
         return message.reply('This is an admin on command, sorry.')
       }
-      client.commands.get(command).execute(Discord, client, message, args, Games, randomMatch)
+      client.commands.get(command).execute(Discord, client, message, args, Games, randomMatch) //**do not pass in guild id for commands due to scope */
     } else if (client.characters.has(command)) {
 
       let currentCharacter = client.characters.get(command)
