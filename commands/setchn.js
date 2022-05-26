@@ -1,11 +1,10 @@
 const { models: { Server } } = require('../db')
-const { activateTimer } = require('../main')
 
 module.exports = {
   name: 'setchn',
   adminOnly: true,
   description: 'sets the channel you are in as the place for battles.',
-  async execute(Discord, client, message, args, Games, randomMatch) {
+  async execute(Discord, client, message, args, Games, randomMatch, activateTimer) {
     try {
       //console.log("Before Setting:", randomMatch[message.guildId])
       randomMatch[message.guildId] = await Server.setBattleChannel({ serverID: message.guildId, battleChannel: message.channelId })

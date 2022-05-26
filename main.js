@@ -176,7 +176,7 @@ client.on('messageCreate', (message) => {
       if (client.commands.get(command).adminOnly && !message.member.permissions.has('ADMINISTRATOR')) {
         return message.reply('This is an admin on command, sorry.')
       }
-      client.commands.get(command).execute(Discord, client, message, args, Games, randomMatch) //**do not pass in guild id for commands due to scope */
+      client.commands.get(command).execute(Discord, client, message, args, Games, randomMatch, activateTimer) //**do not pass in guild id on randomMatch for commands due to scope */
     } else if (client.characters.has(command)) {
 
       let currentCharacter = client.characters.get(command)
@@ -216,7 +216,3 @@ client.on('messageCreate', (message) => {
 })
 
 client.login(process.env.BOT_KEY)
-
-module.exports = {
-  activateTimer
-}

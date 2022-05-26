@@ -6,7 +6,7 @@ module.exports = {
   description: 'Sets the time interval for a random battle to occur (in minutes) (up to 60) (default: 30)',
   async execute(Discord, client, message, args, Games, randomMatch) {
     try {
-      console.log("Before timer change", randomMatch[message.guildId])
+      //console.log("Before timer change", randomMatch[message.guildId])
       if (!randomMatch[message.guildId]) return message.reply("You need to set a battle channel first.")
       if (!args[0]) return message.reply("You need to provide a number for the interval")
       if (isNaN(args[0])) return message.reply(`${args[0]} is not a number`)
