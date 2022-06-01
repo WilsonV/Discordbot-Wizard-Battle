@@ -1,8 +1,10 @@
 const GameStatus = require("../GameStatus")
 const GameTemplate = require('../GameTemplate')
 
-async function BattleBetweenUsers(player1ID, player2ID, MatchChannel, Games,Discord,client) {
+//randomMatch was passed with the guildID already
+async function BattleBetweenUsers(player1ID, player2ID, randomMatch, Games, Discord, client) {
   try {
+    const channelForBattle = await client.channels.cache.get(randomMatch.battleChannel)
     const player1 = await client.users.fetch(player1ID)
     const player2 = await client.users.fetch(player2ID)
 
@@ -16,7 +18,7 @@ async function BattleBetweenUsers(player1ID, player2ID, MatchChannel, Games,Disc
     } else {
       console.log('Starting random match between', player1.username, "and", player2.username)
       const gameName = `${player1.username} VS. ${player2.username}`
-      const newThread = await MatchChannel.channel.threads.create({
+      const newThread = await channelForBattle.threads.create({
         name: gameName,
         autoArchiveDuration: 60,
         reason: 'Private Battle!',
@@ -69,7 +71,7 @@ async function BattleBetweenUsers(player1ID, player2ID, MatchChannel, Games,Disc
       collector.on('end', async (collected, reason) => {
         try {
           if (reason !== 'declined' && reason !== 'accepted') {
-            await MatchChannel.channel.send(`Time to accept has ended, deleting thread`)
+            await channelForBattle.send(`Time to accept has ended, deleting thread`)
             await Games[gameName].thread.delete()
             Games[gameName].status = GameStatus.COMPLETED
           }

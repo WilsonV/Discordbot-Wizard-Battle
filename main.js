@@ -7,8 +7,8 @@ const progressbar = require('./Util/progressBar')
 const { Intents } = Discord
 require('dotenv').config()
 const { TaskTimer } = require('tasktimer');
-const GameStatus = require('./GameStatus');
-const GameTemplate = require('./GameTemplate');
+//const GameStatus = require('./GameStatus');
+//const GameTemplate = require('./GameTemplate');
 const BattleBetweenUsers = require('./Util/userBattle');
 
 const prefix = '!'
