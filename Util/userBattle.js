@@ -2,7 +2,7 @@ const GameStatus = require("../GameStatus")
 const GameTemplate = require('../GameTemplate')
 
 //randomMatch was passed with the guildID already
-async function BattleBetweenUsers(player1ID, player2ID, randomMatch, Games, Discord, client) {
+async function BattleBetweenUsers(player1ID, player2ID, randomMatch, Games, Discord, client, player1Stats, player2Stats) {
   try {
     const channelForBattle = await client.channels.cache.get(randomMatch.battleChannel)
     const player1 = await client.users.fetch(player1ID)
@@ -29,11 +29,22 @@ async function BattleBetweenUsers(player1ID, player2ID, randomMatch, Games, Disc
       Games[gameName].thread = newThread
       await Games[gameName].setPlayers(client, player1.id, player2.id)
 
+      //Set to rank and add stats
+      Games[gameName].ranked = true
+      Games[gameName].player1.stats = { ...player1Stats }
+      Games[gameName].player2.stats = { ...player2Stats }
       //add players to thread
       Games[gameName].addPlayersToThread()
 
+      function showRank(player) {
+        if (Games[gameName].ranked) {
+          return ` (${player.stats.rankPoints} SR) `
+        } else {
+          return ''
+        }
+      }
       //Message players to come
-      await Games[gameName].thread.send(`Random Battle Time! <@${Games[gameName].player1.id}> Vs. <@${Games[gameName].player2.id}>.\nDo you both accept? (yes or no)`)
+      await Games[gameName].thread.send(`Random Battle Time! **Ranked!** <@${Games[gameName].player1.id}> ${showRank(Games[gameName].player1)} Vs. <@${Games[gameName].player2.id}>${showRank(Games[gameName].player2)} \nDo you both accept? (yes or no)`)
 
       //Create collector to wait for response
       const collector = Games[gameName].thread.createMessageCollector({ filter: (m) => m.author.id === player1.id || m.author.id === player2.id, time: 60000 * 2 })

@@ -1,5 +1,6 @@
 const dbConnection = require('./db/connect')()
-const { models: { Server } } = require('./db')
+const { models: { Server, User } } = require('./db')
+
 const Discord = require('discord.js')
 const fs = require("fs");
 //const progressbar = require('string-progressbar')
@@ -61,28 +62,47 @@ async function randomMatchTimerEnd(guildId) {
 
   //Remove inactive players
   for (const player in randomMatch[guildId].activePlayers) {
-    // console.log("updating info for",player)
-    // console.log("listed time is",activePlayers[player],", time now is",Date.now())
     if (randomMatch[guildId].activePlayers[player] < Date.now()) {
-      //console.log("deleting",player,"from list of active")
       delete randomMatch[guildId].activePlayers[player]
     } else {
-      //console.log("adding",player,"as match candidate")
       listOfPlayers.push(player)
     }
   }
 
   //Run match if we have more than 1 player
   if (listOfPlayers.length > 1) {
-    //console.log("attempting to start match, we have enough players")
-    const firstContestant = listOfPlayers.splice(Math.floor(Math.random() * listOfPlayers.length), 1)
-    const secondContestant = listOfPlayers.splice(Math.floor(Math.random() * listOfPlayers.length), 1)
+    try {
+      //console.log("attempting to start match, we have enough players")
+      const firstContestant = listOfPlayers.splice(Math.floor(Math.random() * listOfPlayers.length), 1)
+      const secondContestant = listOfPlayers.splice(Math.floor(Math.random() * listOfPlayers.length), 1)
 
-    BattleBetweenUsers(firstContestant[0], secondContestant[0], randomMatch[guildId], Games, Discord, client)
+      //Get stats for botch contestants
+
+      const player1Stats = await getUserStats(firstContestant[0])
+      const player2Stats = await getUserStats(secondContestant[0])
+
+      BattleBetweenUsers(firstContestant[0], secondContestant[0], randomMatch[guildId], Games, Discord, client, player1Stats, player2Stats)
+    } catch (error) {
+      console.log(error)
+    }
+
   } else {
     //console.log("Not enough players to start a match")
     //console.log("list of players", listOfPlayers)
   }
+}
+
+async function getUserStats(userDiscordID) {
+  try {
+    const userData = await User.findOrCreate({ where: { userID: userDiscordID } })
+    const { id, userID, ...playerStats } = userData[0].toJSON()
+    console.log("Found Player1 Stats as", playerStats)
+    return playerStats
+  } catch (error) {
+    console.log(error)
+    return new Error("Failed to get user's stats")
+  }
+
 }
 
 client.once('ready', async () => {
@@ -113,49 +133,6 @@ function activateTimer(guildId) {
   randomMatch[guildId].activePlayerTrackTimer.on('tick', () => randomMatchTimerEnd(guildId))
   randomMatch[guildId].activePlayerTrackTimer.start()
 }
-
-// client.on('guildCreate', (guild) => {
-//   console.log("I have joined a new server!")
-//   console.log(guild.name, ":", guild.id)
-// })
-
-// const activePlayerTrackTimer = new TaskTimer(60000 * randomMatch.MatchInterval)
-
-//removes players after their time has expired
-// activePlayerTrackTimer.on('tick', async () => {
-
-//   if (!randomMatch.active || !randomMatch.channel) return
-
-//   //console.log("Generating a random match...")
-//   const listOfPlayers = []
-
-//   //Remove inactive players
-//   for (const player in activePlayers) {
-//     // console.log("updating info for",player)
-//     // console.log("listed time is",activePlayers[player],", time now is",Date.now())
-//     if (activePlayers[player] < Date.now()) {
-//       //console.log("deleting",player,"from list of active")
-//       delete activePlayers[player]
-//     } else {
-//       //console.log("adding",player,"as match candidate")
-//       listOfPlayers.push(player)
-//     }
-//   }
-
-//   //Run match if we have more than 1 player
-//   if (listOfPlayers.length > 1) {
-//     //console.log("attempting to start match, we have enough players")
-//     const firstContestant = listOfPlayers.splice(Math.floor(Math.random() * listOfPlayers.length), 1)
-//     const secondContestant = listOfPlayers.splice(Math.floor(Math.random() * listOfPlayers.length), 1)
-
-//     BattleBetweenUsers(firstContestant[0], secondContestant[0], randomMatch, Games, Discord, client)
-//   } else {
-//     //console.log("Not enough players to start a match")
-//     //console.log("list of players", listOfPlayers)
-//   }
-// })
-
-//activePlayerTrackTimer.start()
 
 client.on('messageCreate', (message) => {
 

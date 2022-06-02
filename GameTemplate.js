@@ -1,15 +1,17 @@
 const GameStatus = require("./GameStatus")
 const progressbar = require('./Util/progressBar')
 const pipIconID = require("./pipIconID")
+const { models: { User } } = require('./db')
 
 module.exports = {
   characterSheetURL: 'https://i.imgur.com/WSUtfNP.png',
   status: GameStatus.WAITING_TO_ACCEPT,
-  player1: { id: null, username: '', displayAvatarURL: '', character: null },
-  player2: { id: null, username: '', displayAvatarURL: '', character: null },
+  player1: { id: null, username: '', displayAvatarURL: '', character: null, stats: null },
+  player2: { id: null, username: '', displayAvatarURL: '', character: null, stats: null },
   thread: null,
   player1Accepted: false, //used for random matches only
-  player2Accepted: false, //used for random matches only
+  player2Accepted: false, //used for random matches only,
+  ranked: false,
   setPlayers: async function (client, p1, p2) {
     this.player1.id = p1
     this.player2.id = p2
@@ -164,6 +166,7 @@ module.exports = {
           await this.thread.send(`${player.username} has fleed!`)
           winningMessage = await this.thread.send(`🏆🏆${enemy.username} Has Won!🏆🏆`)
           await winningMessage.react('😔')
+          await this.updateRankings(enemy, player)
 
           this.status = GameStatus.COMPLETED
           collector.stop('finished')
@@ -195,8 +198,10 @@ module.exports = {
                 let winningMessage;
                 if (enemy.character.health <= 0) {
                   winningMessage = await this.thread.send(`🏆🏆${player.username} Has Won!🏆🏆`)
+                  await this.updateRankings(player, enemy)
                 } else {
                   winningMessage = await this.thread.send(`🏆🏆${enemy.username} Has Won!🏆🏆`)
+                  await this.updateRankings(enemy, player)
                 }
 
                 if (player.character.health === player.character.maxHealth || enemy.character.health === enemy.character.maxHealth) {
@@ -271,6 +276,21 @@ module.exports = {
     //     }, 30000);
     //   }
     // })
+  },
+  updateRankings: async function (winner, losser) {
+    const winnerExpectedWinRate = 1 / (1 + Math.pow(10, (losser.stats.rankPoints - winner.stats.rankPoints) / 400))
+    const losserExpectedWinRate = 1 / (1 + Math.pow(10, (winner.stats.rankPoints - losser.stats.rankPoints) / 400))
+
+    console.log(winner.username, "has gained", Math.floor(200 * (1 - winnerExpectedWinRate), " rank points"))
+    const winnerNewRating = winner.stats.rankPoints + Math.floor(200 * (1 - winnerExpectedWinRate))
+
+    await User.update({ rankPoints: winnerNewRating, wins: winner.stats.wins++ }, { where: { userID: winner.id } })
+    await this.thread.send(`**${winner.username}'s rank has gone up to ${winnerNewRating}!**`)
+
+    console.log(losser.username, "has lost", Math.ceil(200 * (0 - losserExpectedWinRate), " rank points"))
+    const losserNewRating = losser.stats.rankPoints + Math.ceil(200 * (0 - losserExpectedWinRate))
+    await User.update({ rankPoints: losserNewRating, losses: losser.stats.losses++ }, { where: { userID: losser.id } })
+    await this.thread.send(`**${losser.username}'s rank has decreased to ${losserNewRating}.**`)
   }
 
 }
