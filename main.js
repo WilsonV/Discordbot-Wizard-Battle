@@ -77,7 +77,6 @@ async function randomMatchTimerEnd(guildId) {
       const secondContestant = listOfPlayers.splice(Math.floor(Math.random() * listOfPlayers.length), 1)
 
       //Get stats for botch contestants
-
       const player1Stats = await getUserStats(firstContestant[0])
       const player2Stats = await getUserStats(secondContestant[0])
 
@@ -85,7 +84,7 @@ async function randomMatchTimerEnd(guildId) {
     } catch (error) {
       console.log(error)
     }
-
+    listOfPlayers = []
   } else {
     //console.log("Not enough players to start a match")
     //console.log("list of players", listOfPlayers)
