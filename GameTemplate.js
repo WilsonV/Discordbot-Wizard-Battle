@@ -166,7 +166,9 @@ module.exports = {
           await this.thread.send(`${player.username} has fleed!`)
           winningMessage = await this.thread.send(`🏆🏆${enemy.username} Has Won!🏆🏆`)
           await winningMessage.react('😔')
-          await this.updateRankings(enemy, player)
+          if (this.ranked) {
+            await this.updateRankings(enemy, player)
+          }
 
           this.status = GameStatus.COMPLETED
           collector.stop('finished')
@@ -198,10 +200,14 @@ module.exports = {
                 let winningMessage;
                 if (enemy.character.health <= 0) {
                   winningMessage = await this.thread.send(`🏆🏆${player.username} Has Won!🏆🏆`)
-                  await this.updateRankings(player, enemy)
+                  if (this.ranked) {
+                    await this.updateRankings(player, enemy)
+                  }
                 } else {
                   winningMessage = await this.thread.send(`🏆🏆${enemy.username} Has Won!🏆🏆`)
-                  await this.updateRankings(enemy, player)
+                  if (this.ranked) {
+                    await this.updateRankings(enemy, player)
+                  }
                 }
 
                 if (player.character.health === player.character.maxHealth || enemy.character.health === enemy.character.maxHealth) {
