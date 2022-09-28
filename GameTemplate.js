@@ -263,39 +263,27 @@ module.exports = {
           await this.runPlayersTurn(Discord, client)
           return
         } else {
-          //msg.reply('Please enter a number')
           return
         }
       }
 
-      //collector.resetTimer({ time: 60000 * 5 })
     })
 
-    // collector.on('end', async (collected, reason) => {
-    //   if (reason !== 'finished') {
-    //     if(client)
-    //     await this.thread.send(`Game has ended due to no response. closing thread in 30s`)
-    //     await this.thread.setArchived(true)
-    //     setTimeout(() => {
-    //       this.thread.delete()
-    //       this.status = GameStatus.COMPLETED
-    //     }, 30000);
-    //   }
-    // })
   },
   updateRankings: async function (winner, losser) {
     const winnerExpectedWinRate = 1 / (1 + Math.pow(10, (losser.stats.rankPoints - winner.stats.rankPoints) / 400))
     const losserExpectedWinRate = 1 / (1 + Math.pow(10, (winner.stats.rankPoints - losser.stats.rankPoints) / 400))
 
-    console.log(winner.username, "has gained", Math.floor(200 * (1 - winnerExpectedWinRate), " rank points"))
+    //console.log(winner.username, "has gained", Math.floor(200 * (1 - winnerExpectedWinRate), " rank points"))
     const winnerNewRating = winner.stats.rankPoints + Math.floor(200 * (1 - winnerExpectedWinRate))
 
-    await User.update({ rankPoints: winnerNewRating, wins: winner.stats.wins++ }, { where: { userID: winner.id } })
+    await User.update({ rankPoints: winnerNewRating, wins: winner.stats.wins + 1 }, { where: { userID: winner.id } })
     await this.thread.send(`**${winner.username}'s rank has gone up to ${winnerNewRating}!**`)
 
-    console.log(losser.username, "has lost", Math.ceil(200 * (0 - losserExpectedWinRate), " rank points"))
+    //console.log(losser.username, "has lost", Math.ceil(200 * (0 - losserExpectedWinRate), " rank points"))
     const losserNewRating = losser.stats.rankPoints + Math.ceil(200 * (0 - losserExpectedWinRate))
-    await User.update({ rankPoints: losserNewRating, losses: losser.stats.losses++ }, { where: { userID: losser.id } })
+
+    await User.update({ rankPoints: losserNewRating, losses: losser.stats.losses + 1 }, { where: { userID: losser.id } })
     await this.thread.send(`**${losser.username}'s rank has decreased to ${losserNewRating}.**`)
   }
 

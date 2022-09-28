@@ -1,22 +1,21 @@
 const dbConnection = require('./db/connect')()
 const { models: { Server, User } } = require('./db')
+const getUserStats = require('./Util/userStats')
 
 const Discord = require('discord.js')
 const fs = require("fs");
-//const progressbar = require('string-progressbar')
+
 const progressbar = require('./Util/progressBar')
 const { Intents } = Discord
 require('dotenv').config()
 const { TaskTimer } = require('tasktimer');
-//const GameStatus = require('./GameStatus');
-//const GameTemplate = require('./GameTemplate');
+
 const BattleBetweenUsers = require('./Util/userBattle');
 
 const prefix = '!'
 const Games = {};
 //const randomMatchTemplate = { active: false, channel: null, MatchInterval: 30, KeepPlayersActive: 10 };
 const randomMatch = {};
-//const activePlayers = {}
 
 //Create Client Instance
 const client = new Discord.Client({
@@ -91,18 +90,18 @@ async function randomMatchTimerEnd(guildId) {
   }
 }
 
-async function getUserStats(userDiscordID) {
-  try {
-    const userData = await User.findOrCreate({ where: { userID: userDiscordID } })
-    const { id, userID, ...playerStats } = userData[0].toJSON()
-    console.log("Found Player1 Stats as", playerStats)
-    return playerStats
-  } catch (error) {
-    console.log(error)
-    return new Error("Failed to get user's stats")
-  }
+// async function getUserStats(userDiscordID) {
+//   try {
+//     const userData = await User.findOrCreate({ where: { userID: userDiscordID } })
+//     const { id, userID, ...playerStats } = userData[0].toJSON()
+//     console.log("Found Player1 Stats as", playerStats)
+//     return playerStats
+//   } catch (error) {
+//     console.log(error)
+//     return new Error("Failed to get user's stats")
+//   }
 
-}
+// }
 
 client.once('ready', async () => {
 

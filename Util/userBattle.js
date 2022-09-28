@@ -16,7 +16,7 @@ async function BattleBetweenUsers(player1ID, player2ID, randomMatch, Games, Disc
       console.log("there is a already a match between", player1.username, "and", player2.username)
       return
     } else {
-      console.log('Starting random match between', player1.username, "and", player2.username)
+      console.log('Starting a match between', player1.username, "and", player2.username)
       const gameName = `${player1.username} VS. ${player2.username}`
       const newThread = await channelForBattle.threads.create({
         name: gameName,
@@ -55,9 +55,12 @@ async function BattleBetweenUsers(player1ID, player2ID, randomMatch, Games, Disc
         if (response.startsWith('yes')) {
           await msg.channel.send(`${msg.author.username} has accepted the battle!`)
 
-          if (msg.author.id === Games[gameName].player1.id) {
+          //These accept IFs are split to allow testing using a single account with same id
+          if (msg.author.id === Games[gameName].player1.id && !Games[gameName].player1Accepted) {
             Games[gameName].player1Accepted = true
-          } else if (msg.author.id === Games[gameName].player2.id) {
+          }
+
+          if (msg.author.id === Games[gameName].player2.id && !Games[gameName].player2Accepted) {
             Games[gameName].player2Accepted = true
           }
 
