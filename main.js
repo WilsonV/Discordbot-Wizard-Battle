@@ -83,7 +83,7 @@ async function randomMatchTimerEnd(guildId) {
     } catch (error) {
       console.log(error)
     }
-    listOfPlayers = []
+
   } else {
     //console.log("Not enough players to start a match")
     //console.log("list of players", listOfPlayers)
