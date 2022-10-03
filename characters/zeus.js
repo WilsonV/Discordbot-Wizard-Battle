@@ -28,16 +28,18 @@ module.exports = {
     return [
       {
         name: 'Shattering Blitz',
-        cost: 0,
-        effect: `${Math.floor(65 * myself.pips * (1 + (myself.damage / 100)))}💥 & -${1}🛡`,
+        cost: 1,
+        effect: `${Math.floor(35 * myself.pips * (1 + (myself.damage / 100)))}💥 & -${2}🛡`,
         execute(enemy) {
+          let pips = myself.pips
+          myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(65 * myself.pips * (1 + (myself.damage / 100)))
+            let damage = Math.floor(35 * pips * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
             let enemy_starting_resist = enemy.resist
-            enemy.resist = Math.max(enemy.resist - 1, 0)
+            enemy.resist = Math.max(enemy.resist - 2, 0)
             return { status: 'success', type: 'attack', damage, debuff: `applied -${enemy_starting_resist - enemy.resist}🛡 on ${enemy.name}` }
           }
 

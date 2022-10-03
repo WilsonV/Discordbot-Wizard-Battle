@@ -26,13 +26,15 @@ module.exports = {
     return [
       {
         name: 'Blaze',
-        cost: 0,
-        effect: `${Math.floor(75 * myself.pips * (1 + (myself.damage / 100)))}💥`,
+        cost: 1,
+        effect: `${Math.floor(38 * myself.pips * (1 + (myself.damage / 100)))}💥`,
         execute(enemy) {
+          let pips = myself.pips
+          myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(75 * myself.pips * (1 + (myself.damage / 100)))
+            let damage = Math.floor(38 * pips * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
             return { status: 'success', type: 'attack', damage }
           }

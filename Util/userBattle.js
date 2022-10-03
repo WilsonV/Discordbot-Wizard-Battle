@@ -44,7 +44,7 @@ async function BattleBetweenUsers(player1ID, player2ID, randomMatch, Games, Disc
         }
       }
       //Message players to come
-      await Games[gameName].thread.send(`Random Battle Time! **Ranked!** <@${Games[gameName].player1.id}> ${showRank(Games[gameName].player1)} Vs. <@${Games[gameName].player2.id}>${showRank(Games[gameName].player2)} \nDo you both accept? (yes or no)`)
+      await Games[gameName].thread.send(`Battle Time! **Ranked!** <@${Games[gameName].player1.id}> ${showRank(Games[gameName].player1)} Vs. <@${Games[gameName].player2.id}>${showRank(Games[gameName].player2)} \nDo you both accept? (yes or no)`)
 
       //Create collector to wait for response
       const collector = Games[gameName].thread.createMessageCollector({ filter: (m) => m.author.id === player1.id || m.author.id === player2.id, time: 60000 * 2 })

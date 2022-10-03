@@ -27,13 +27,15 @@ module.exports = {
     return [
       {
         name: 'Burst',
-        cost: 0,
-        effect: `${Math.floor(60 * myself.pips * (1 + (myself.damage / 100)))}💥`,
+        cost: 1,
+        effect: `${Math.floor(30 * myself.pips * (1 + (myself.damage / 100)))}💥`,
         execute(enemy) {
+          let pips = myself.pips
+          myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(60 * myself.pips * (1 + (myself.damage / 100)))
+            let damage = Math.floor(30 * pips * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
             return { status: 'success', type: 'attack', damage }
           }

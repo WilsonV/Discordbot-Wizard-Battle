@@ -3,8 +3,8 @@ module.exports = {
   name: 'Jade Oni',
   nickname: 'jadeoni',
   imgURL: 'https://i.imgur.com/yA0bnZz.png',
-  maxHealth: 6500,
-  health: 6500,
+  maxHealth: 5000,
+  health: 5000,
   pips: 4,
   damage: 30,
   resist: 20,
@@ -30,10 +30,12 @@ module.exports = {
     return [
       {
         name: 'Blessing',
-        cost: 0,
-        effect: `+${Math.floor(50 * myself.pips * myself.healBoost)}💚`,
+        cost: 1,
+        effect: `+${Math.floor(25 * myself.pips * myself.healBoost)}💚`,
         execute() {
-          let healed = myself.heal(Math.floor(50 * myself.pips))
+          let pips = myself.pips
+          myself.pips -= this.cost
+          let healed = myself.heal(Math.floor(25 * pips))
           return { status: 'success', type: 'restore', buff: `${healed}💚` }
         }
       },

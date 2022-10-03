@@ -39,13 +39,15 @@ module.exports = {
     return [
       {
         name: 'Dark Siphon',
-        cost: 0,
-        effect: `${Math.floor(70 * myself.pips * (1 + (myself.damage / 100)))}💥 & Steal ${2}🗡`,
+        cost: 1,
+        effect: `${Math.floor(35 * myself.pips * (1 + (myself.damage / 100)))}💥 & Steal ${2}🗡`,
         execute(enemy) {
+          let pips = myself.pips
+          myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
-            let damage = Math.floor(70 * myself.pips * (1 + (myself.damage / 100)))
+            let damage = Math.floor(35 * pips * (1 + (myself.damage / 100)))
             damage = enemy.takeDamage(damage)
 
             let enemy_starting_damage = enemy.damage

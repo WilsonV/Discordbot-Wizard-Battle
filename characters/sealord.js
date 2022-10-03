@@ -46,9 +46,10 @@ module.exports = {
     return [
       {
         name: 'Wild Bolt',
-        cost: 0,
-        effect: `${Math.floor(10 * (1 + (myself.damage / 100)))}, ${Math.floor(100 * (1 + (myself.damage / 100)))} or ${Math.floor(1000 * (1 + (myself.damage / 100)))} 💥`,
+        cost: 1,
+        effect: `${Math.floor(10 * (1 + (myself.damage / 100)))}, ${Math.floor(300 * (1 + (myself.damage / 100)))} or ${Math.floor(1000 * (1 + (myself.damage / 100)))} 💥`,
         execute(enemy) {
+          myself.pips -= this.cost
           if (myself.abilityMissed()) {
             return { status: 'miss' }
           } else {
@@ -58,7 +59,7 @@ module.exports = {
                 damage = 10
                 break;
               case 1:
-                damage = 100
+                damage = 300
                 break;
               case 2:
                 damage = 1000
