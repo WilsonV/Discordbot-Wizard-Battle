@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize')
 
-const databaseName = 'character-battle'
+const databaseName = 'wizard-battle'
 
 const config = {
   logging: false
