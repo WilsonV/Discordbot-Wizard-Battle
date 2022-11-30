@@ -1,3 +1,4 @@
+require('dotenv').config()
 const dbConnection = require('./db/connect')()
 const { models: { Server, User } } = require('./db')
 const getUserStats = require('./Util/userStats')
@@ -7,7 +8,6 @@ const fs = require("fs");
 
 const progressbar = require('./Util/progressBar')
 const { Intents } = Discord
-require('dotenv').config()
 const { TaskTimer } = require('tasktimer');
 
 const BattleBetweenUsers = require('./Util/userBattle');
