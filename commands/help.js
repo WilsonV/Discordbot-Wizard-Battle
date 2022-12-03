@@ -27,7 +27,7 @@ module.exports = {
       }
 
       embedMsg.addField('[character name]', 'Provides stats and details about a character (no spaces)', false)
-      embedMsg.addField('flee', 'Flee and surrender an ongoing match', false)
+      embedMsg.addField('flee', 'Flee and surrender an ongoing match *(only in a match)*', false)
 
       message.reply({ embeds: [embedMsg] });
     } catch (error) {

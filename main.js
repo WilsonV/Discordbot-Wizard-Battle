@@ -106,7 +106,6 @@ async function randomMatchTimerEnd(guildId) {
 client.once('ready', async () => {
 
   try {
-    console.log("Wizard Battle Bot is online!")
 
     //Load up server and their battle channel
     //console.log("Loading Guild List settings")
@@ -118,6 +117,7 @@ client.once('ready', async () => {
         activateTimer(guild.id)
       }
     })
+    console.log("Wizard Battle Bot is online!")
     //console.log("Finished loading list", randomMatch)
   } catch (error) {
     console.log(error)
@@ -138,11 +138,10 @@ client.on('messageCreate', (message) => {
     //Random Matches registry
     if (!message.content.startsWith(prefix) && !message.author.bot && randomMatch[message.guildId]) {
       randomMatch[message.guildId].activePlayers[message.author.id] = Date.now() + (60000 * randomMatch[message.guildId].keepPlayersActive)
-      //console.log("updated active player", randomMatch[message.guildId].activePlayers)
     }
 
     //Command code behavior (prevents commands outside of match channel)
-    if (!message.content.startsWith(prefix) || message.author.bot || message.content.toLowerCase() === '!flee') return;
+    if (!message.content.startsWith(prefix) || message.author.bot || message.content.toLowerCase() === prefix + 'flee') return;
 
     const args = message.content.slice(prefix.length).split(" ");
     const command = args.shift().toLowerCase();

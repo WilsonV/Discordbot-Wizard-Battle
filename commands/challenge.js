@@ -15,6 +15,7 @@ module.exports = {
 
       if (message.channel.isThread()) return message.reply("You can't challenge someone inside a thread.")
       if (message.mentions.users.size < 1) return message.reply("Challenge Who? Mention a person to challenge!")
+      if (message.mentions.users.first().bot) return message.reply("You can't challenge a bot silly.")
       let userToChallenge = message.mentions.users.first().id
       let challenger = message.author.id
 
