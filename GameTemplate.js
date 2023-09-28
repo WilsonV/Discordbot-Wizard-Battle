@@ -91,8 +91,8 @@ module.exports = {
           inline: true
         },
         {
-          name: player.character.healBoost ? '-' : 'Heal Boost',
-          value: player.character.healBoost ? '-' : player.character.healBoost,
+          name: `${player.character.healBoost == 0 ? '-' : 'Heal Boost'}`,
+          value: `${player.character.healBoost == 0 ? '-' : player.character.healBoost}`,
           inline: true
         }
       ])
@@ -149,8 +149,8 @@ module.exports = {
           inline: true
         },
         {
-          name: player.character.healBoost ? '-' : 'Heal Boost',
-          value: player.character.healBoost ? '-' : player.character.healBoost,
+          name: `${player.character.healBoost == 0 ? '-' : 'Heal Boost'}`,
+          value: `${player.character.healBoost == 0 ? '-' : player.character.healBoost}`,
           inline: true
         }
       ])
