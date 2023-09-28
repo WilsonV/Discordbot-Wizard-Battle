@@ -1,11 +1,14 @@
+const { SlashCommandBuilder } = require('discord.js')
+
 module.exports = {
-  name: "help",
+  data: new SlashCommandBuilder()
+    .setName('help')
+    .setDescription('Display available commands'),
   adminOnly: false,
-  description: "Display available commands",
-  execute(Discord, client, message, args) {
+  execute(Discord, client, interaction) {
 
     try {
-      const embedMsg = new Discord.MessageEmbed()
+      const embedMsg = new Discord.EmbedBuilder()
         .setTimestamp(Date.now())
         .setTitle("Commands")
         .setDescription("List of all available commands")
@@ -16,23 +19,39 @@ module.exports = {
       for (const command of iterator) {
         //Index 1 because index 0 is a the key (file name) of the command
         if (command[1].adminOnly) {
-          if (message.member.permissions.has('ADMINISTRATOR')) {
-            embedMsg.addField(`${command[1].name} *(admin only)*`, command[1].description, false)
+          if (interaction.memberPermissions.has(Discord.PermissionFlagsBits.Administrator)) {
+            embedMsg.addFields([{
+              name: `${command[1].data.name} *(admin only)*`,
+              value: command[1].data.description,
+              inline: false
+            }])
           }
 
         } else {
-          embedMsg.addField(command[1].name, command[1].description, false)
+          embedMsg.addFields([{
+            name: command[1].data.name,
+            value: command[1].data.description,
+            inline: false
+          }])
         }
 
       }
 
-      embedMsg.addField('[character name]', 'Provides stats and details about a character (no spaces)', false)
-      embedMsg.addField('flee', 'Flee and surrender an ongoing match *(only in a match)*', false)
+      embedMsg.addFields([{
+        name: '[character name]',
+        value: 'Provides stats and details about a character',
+        inline: false
+      },
+      {
+        name: 'flee',
+        value: 'Flee and surrender an ongoing match *(only in a match)*',
+        inline: false
+      }])
 
-      message.reply({ embeds: [embedMsg] });
+      interaction.reply({ embeds: [embedMsg] });
     } catch (error) {
       console.log(error)
-      message.reply("Error, could not get command list.")
+      interaction.reply("Error, could not get command list.")
     }
   }
 }

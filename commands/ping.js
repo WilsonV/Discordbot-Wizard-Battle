@@ -1,7 +1,12 @@
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js')
+
 module.exports = {
-  name: 'ping',
-  description: 'Pings the bot, make sure it is online.',
-  execute(Discord,client,message){
-    message.reply("Pong!")
+  data: new SlashCommandBuilder()
+    .setName('ping')
+    .setDescription('Pings the bot, make sure it is online.')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+  adminOnly: true,
+  execute(Discord, client, interaction) {
+    interaction.reply("Pong!")
   }
 }

@@ -1,32 +1,52 @@
+const { SlashCommandBuilder } = require('discord.js')
 const GameStatus = require("../GameStatus")
 const GameTemplate = require("../GameTemplate")
 const getUserStats = require('../Util/userStats')
 const BattleBetweenUsers = require('../Util/userBattle');
 
 module.exports = {
-  name: 'challenge',
-  description: 'challenge a player to a battle!',
-  async execute(Discord, client, message, args, Games, randomMatch) {
+  data: new SlashCommandBuilder()
+    .setName('challenge')
+    .setDescription('challenge a player to a battle!')
+    .addUserOption(option =>
+      option
+        .setName('user')
+        .setDescription('user to challenge')
+        .setRequired(true)
+    ),
+  adminOnly: false,
+  async execute(Discord, client, interaction, Games, randomMatch) {
     try {
       //console.log("Starting challenge...")
       //Prevent wrong channel challenges
-      if (!randomMatch[message.guildId]) return message.reply("A battle channel has not be set, get an admin to set one")
-      if (message.channelId !== randomMatch[message.guildId].battleChannel) return message.reply(`This is not where you challenge people, try ${message.guild.channels.cache.get(randomMatch[message.guildId].battleChannel).toString()}`)
+      if (!randomMatch[interaction.guildId]) return interaction.reply("A battle channel has not be set, get an admin to set one")
+      if (interaction.channelId !== randomMatch[interaction.guildId].battleChannel) {
+        let properChannelName = interaction.guild.channels.cache.get(randomMatch[interaction.guildId].battleChannel)
+        if (!properChannelName) return interaction.reply("This is not where you challenge people, you need to set one again using 'setchn' (Admin Only).")
 
-      if (message.channel.isThread()) return message.reply("You can't challenge someone inside a thread.")
-      if (message.mentions.users.size < 1) return message.reply("Challenge Who? Mention a person to challenge!")
+        let properChannelNameString = properChannelName.toString()
+        if (!properChannelNameString) return interaction.reply("This is not where you challenge people, am not sure which one it is neither.")
+
+        return interaction.reply(`This is not where you challenge people, try ${properChannelNameString}`)
+      }
+
+      if (interaction.channel.isThread()) return interaction.reply("You can't challenge someone inside a thread.")
+      // if (message.mentions.users.size < 1) return message.reply("Challenge Who? Mention a person to challenge!")
       if (message.mentions.users.first().bot) return message.reply("You can't challenge a bot silly.")
-      let userToChallenge = message.mentions.users.first().id
-      let challenger = message.author.id
 
-      if (userToChallenge == challenger) return message.reply("Can't challenge yourself.")
+      let userToChallenge = interaction.options.get('user').value
+      let challenger = interaction.user.id
+
+      if (!process.env.TEST_MODE === 'true') {
+        if (userToChallenge == challenger) return interaction.reply("You can't challenge yourself.")
+      }
 
       const player1Stats = await getUserStats(challenger)
       const player2Stats = await getUserStats(userToChallenge)
 
-      BattleBetweenUsers(challenger, userToChallenge, randomMatch[message.guildId], Games, Discord, client, player1Stats, player2Stats)
+      BattleBetweenUsers(challenger, userToChallenge, randomMatch[interaction.guildId], Games, Discord, client, player1Stats, player2Stats)
     } catch (error) {
-      message.reply('Failed to initiate challenge')
+      interaction.reply('Error: Challenge Failed')
       console.log(error)
     }
   }

@@ -37,6 +37,22 @@ const Server = db.define('server', {
       min: 1,
       max: 60,
     }
+  },
+  patchNumber: {
+    type: Sequelize.STRING,
+    defaultValue: '1.0',
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
+  },
+  gamesPlayed: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
+    allowNull: false,
+    validate: {
+      min: 0,
+    }
   }
 }, { timestamps: false })
 

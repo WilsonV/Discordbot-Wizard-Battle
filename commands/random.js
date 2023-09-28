@@ -1,29 +1,39 @@
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js')
 const { models: { Server } } = require('../db')
 
 module.exports = {
+  data: new SlashCommandBuilder()
+    .setName('random')
+    .setDescription('Turn on/off random battles between active members')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+    .addBooleanOption(option =>
+      option
+        .setName('true-false')
+        .setDescription('set random battles on or off')
+        .setRequired(true)),
   name: 'random',
   adminOnly: true,
-  description: 'Turn on/off random battles between active members',
-  async execute(Discord, client, message, args, Games, randomMatch) {
+  async execute(Discord, client, interaction, Games, randomMatch) {
     try {
-      if (!randomMatch[message.guildId]) return message.reply("You need to set a battle channel first.")
+      if (!randomMatch[interaction.guildId]) return interaction.reply("You need to set a battle channel first with  'setchn'. If you already did, than check this Bots permissions.")
+      if (!randomMatch[interaction.guildId].battleChannel) return interaction.reply("You need to set a battle channel first with  'setchn'.")
 
-      if (args[0] === 'on') {
-        await Server.update({ active: true }, { where: { serverID: message.guildId } })
-        randomMatch[message.guildId].active = true
+      if (interaction.options.get('true-false').value === true) {
+        await Server.update({ active: true }, { where: { serverID: interaction.guildId } })
+        randomMatch[interaction.guildId].active = true
         //**Activate the timer if it isnt already active */
 
         message.reply(`Random battle turned on`)
-      } else if (args[0] === 'off') {
-        await Server.update({ active: false }, { where: { serverID: message.guildId } })
-        randomMatch[message.guildId].active = false
-        message.reply(`Random battle turned off`)
+      } else if (interaction.options.get('true-false').value === false) {
+        await Server.update({ active: false }, { where: { serverID: interaction.guildId } })
+        randomMatch[interaction.guildId].active = false
+        interaction.reply(`Random battle turned off`)
       } else {
-        message.reply("You entered a wrong value, try 'on' or 'off'")
+        interaction.reply("You entered a wrong value, try 'on' or 'off'")
       }
     } catch (error) {
       console.log(error)
-      message?.reply("Error: Could not turn on/off random battles")
+      interaction?.reply("Error: Could not turn on/off random battles")
     }
 
 

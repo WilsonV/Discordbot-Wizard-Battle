@@ -9,7 +9,7 @@
   "author": "Wilson V.",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^13.6.0",
+    "discord.js": "^14.11.0",
     "dotenv": "^16.0.0",
     "pg": "^8.7.3",
     "sequelize": "^6.20.0",

@@ -1,23 +1,31 @@
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js')
 const { models: { Server } } = require('../db')
 
 module.exports = {
-  name: 'setchn',
+  data: new SlashCommandBuilder()
+    .setName('setchn')
+    .setDescription('sets the channel you are in as the place for battles.')
+    .addChannelOption(option =>
+      option
+        .setName('battle-channel')
+        .setDescription('channel to use for battles')
+        .setRequired(true))
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
   adminOnly: true,
-  description: 'sets the channel you are in as the place for battles.',
-  async execute(Discord, client, message, args, Games, randomMatch, activateTimer) {
+  async execute(Discord, client, interaction, Games, randomMatch, activateTimer) {
     try {
       //console.log("Before Setting:", randomMatch[message.guildId])
-      randomMatch[message.guildId] = await Server.setBattleChannel({ serverID: message.guildId, battleChannel: message.channelId })
-      randomMatch[message.guildId].battleChannel = message.channelId
+      randomMatch[interaction.guildId] = await Server.setBattleChannel({ serverID: interaction.guildId, battleChannel: interaction.channelId })
+      randomMatch[interaction.guildId].battleChannel = interaction.channelId
       //add timer if they didnt have one from startup
-      if (!randomMatch[message.guildId].activePlayerTrackTimer) {
-        activateTimer(message.guildId)
+      if (!randomMatch[interaction.guildId].activePlayerTrackTimer) {
+        activateTimer(interaction.guildId)
       }
-      message.reply("This channel has been set for battles!")
-      //console.log("After Setting:", randomMatch[message.guildId])
+      interaction.reply("This channel has been set for battles!")
+      //console.log("After Setting:", randomMatch[interaction.guildId])
     } catch (error) {
       console.log(error)
-      message?.reply("Error: Could not set channel for battle")
+      interaction?.reply("Error: Could not set channel for battle")
     }
 
   }

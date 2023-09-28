@@ -37,4 +37,8 @@ const User = db.define('user', {
   }
 }, { timestamps: false })
 
+User.afterUpdate(async (user, options) => {
+  user.rankPoints = Math.max(user.rankPoints, 0)
+})
+
 module.exports = User

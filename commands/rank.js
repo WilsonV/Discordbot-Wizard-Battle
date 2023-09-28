@@ -1,38 +1,50 @@
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
 const { models: { User } } = require('../db')
-
-async function getUserStats(userDiscordID) {
-  try {
-    const userData = await User.findOrCreate({ where: { userID: userDiscordID } })
-    const { id, userID, ...playerStats } = userData[0].toJSON()
-    console.log("Found Player1 Stats as", playerStats)
-    return playerStats
-  } catch (error) {
-    console.log(error)
-    return new Error("Failed to get user's stats")
-  }
-
-}
+const getUserStats = require('../Util/userStats')
 
 module.exports = {
-  name: 'rank',
-  description: 'View your rankings',
-  async execute(Discord, client, message) {
+  data: new SlashCommandBuilder()
+    .setName('rank')
+    .setDescription("view a user's rankings")
+    .addUserOption(option =>
+      option
+        .setName('user')
+        .setDescription('user to view')
+        .setRequired(true)
+    ),
+  adminOnly: false,
+  async execute(Discord, client, interaction) {
     try {
-      const stats = await getUserStats(message.author.id)
+      const targetedUser = interaction.options.get('user').user;
+      const stats = await getUserStats(targetedUser.id)
 
-      const newEmbed = new Discord.MessageEmbed()
+      const newEmbed = new EmbedBuilder()
         .setTimestamp(Date.now())
         .setColor("#ffffff")
-        .setTitle(`${message.author.username}'s rank`)
-        .setThumbnail(message.author.avatarURL())
-        .addField("Ranking", String(stats.rankPoints), true)
-        .addField("Wins", String(stats.wins), true)
-        .addField("Losses", String(stats.losses), true)
+        .setTitle(`${targetedUser.username}'s rank`)
+        .setThumbnail(targetedUser.avatarURL())
+        .addFields([
+          {
+            name: "Ranking",
+            value: String(stats.rankPoints),
+            inline: true
+          },
+          {
+            name: "Wins",
+            value: String(stats.wins),
+            inline: true
+          },
+          {
+            name: "Losses",
+            value: String(stats.losses),
+            inline: true
+          }
+        ])
 
-      message.reply({ embeds: [newEmbed] })
+      interaction.reply({ embeds: [newEmbed] })
     } catch (error) {
       console.log(error)
-      message?.reply("Error: Could not retrieve rank")
+      interaction?.reply("Error: Could not retrieve rank")
     }
   }
 }
