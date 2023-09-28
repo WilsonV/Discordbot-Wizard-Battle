@@ -11,6 +11,7 @@ module.exports = {
   damage: 50,
   resist: 35,
   accuracy: 103,
+  healBoost: 0,
   blindJudgementCost: 0,
   fairJudgementCost: 0,
   passive: function () {

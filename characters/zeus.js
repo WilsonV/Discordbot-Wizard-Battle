@@ -11,6 +11,7 @@ module.exports = {
   damage: 55,
   resist: 30,
   accuracy: 80,
+  healBoost: 0,
   extraTurn: 0,
   shatterCost: 4,
   passive: function () {

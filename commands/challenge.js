@@ -32,7 +32,7 @@ module.exports = {
 
       if (interaction.channel.isThread()) return interaction.reply("You can't challenge someone inside a thread.")
       // if (message.mentions.users.size < 1) return message.reply("Challenge Who? Mention a person to challenge!")
-      if (message.mentions.users.first().bot) return message.reply("You can't challenge a bot silly.")
+      if (interaction.options.get('user').bot) return interaction.reply("You can't challenge a bot silly.")
 
       let userToChallenge = interaction.options.get('user').value
       let challenger = interaction.user.id

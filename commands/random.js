@@ -23,7 +23,7 @@ module.exports = {
         randomMatch[interaction.guildId].active = true
         //**Activate the timer if it isnt already active */
 
-        message.reply(`Random battle turned on`)
+        interaction.reply(`Random battle turned on`)
       } else if (interaction.options.get('true-false').value === false) {
         await Server.update({ active: false }, { where: { serverID: interaction.guildId } })
         randomMatch[interaction.guildId].active = false

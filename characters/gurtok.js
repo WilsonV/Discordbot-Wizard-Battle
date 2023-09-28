@@ -12,6 +12,7 @@ module.exports = {
   damage: 65,
   resist: 30,
   accuracy: 75,
+  healBoost: 0,
   pheonixCost: 0,
   passive: function () {
     this.addPips(1)

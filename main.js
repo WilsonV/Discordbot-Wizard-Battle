@@ -213,7 +213,7 @@ client.on('interactionCreate', (interaction) => {
 
     if (client.commands.has(command)) {
 
-
+      // console.log("Running Command", command);
       client.commands.get(command).execute(Discord, client, interaction, Games, randomMatch, activateTimer)//**do not pass in guild id on randomMatch for commands due to scope */
 
     } else {

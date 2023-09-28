@@ -11,6 +11,7 @@ module.exports = {
   damage: 0,
   resist: 30,
   accuracy: 75,
+  healBoost: 0,
   extraTurn: 0,
   calmBeforeStorm: { cost: 0, active: false, turnsLeft: 0, damage: 0, resist: 0 },
   enfeeble: { playable: true, cost: 0 },

@@ -12,6 +12,7 @@ module.exports = {
   damage: 45,
   resist: 35,
   accuracy: 85,
+  healBoost: 0,
   extraTurn: 0,
   funeralCeremony: { active: false, cost: 8, turnsLeft: 0, damage: 0, pips: 0 },
   passive: function (enemy) {

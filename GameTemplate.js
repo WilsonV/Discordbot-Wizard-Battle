@@ -72,27 +72,27 @@ module.exports = {
         },
         {
           name: 'Pips',
-          value: `${progressbar.filledBar(100, player.character.energy, 10, ' ')}`,
+          value: `${progressbar.filledBar(14, player.character.pips, 14, ' ')}`,
           inline: true
         },
         {
           name: 'Damage',
-          value: `${progressbar.filledBar(100, player.character.strength, 10, ' ')}`,
+          value: `${progressbar.filledBar(100, player.character.damage, 10, ' ')}`,
           inline: true
         },
         {
           name: 'Resist',
-          value: `${progressbar.filledBar(100, player.character.defense, 10, ' ')}`,
+          value: `${progressbar.filledBar(100, player.character.resist, 10, ' ')}`,
           inline: true
         },
         {
           name: 'Accuracy',
-          value: `${progressbar.filledBar(100, player.character.speed, 10, ' ')}`,
+          value: `${progressbar.filledBar(100, player.character.accuracy, 10, ' ')}`,
           inline: true
         },
         {
-          name: '-',
-          value: '-',
+          name: player.character.healBoost ? '-' : 'Heal Boost',
+          value: player.character.healBoost ? '-' : player.character.healBoost,
           inline: true
         }
       ])
@@ -149,8 +149,8 @@ module.exports = {
           inline: true
         },
         {
-          name: '-',
-          value: '-',
+          name: player.character.healBoost ? '-' : 'Heal Boost',
+          value: player.character.healBoost ? '-' : player.character.healBoost,
           inline: true
         }
       ])
@@ -158,7 +158,7 @@ module.exports = {
       newEmbed.addFields(
         player.character.abilities().map((ability, index) => {
           let frontTag = '', endTag = ''
-          if (player.character.energy < ability.cost || preventedBySORL(player.character, ability)) {
+          if (player.character.pips < ability.cost) {
             frontTag = `~~`
             endTag = `~~`
           }
@@ -273,7 +273,7 @@ module.exports = {
             enemy = this.player1
           }
           //If the user flee
-          if (response === '!flee') {
+          if (response === 'flee') {
             player.character.health = 0
             await this.thread.send(`${player.username} has fleed!`)
             winningMessage = await this.thread.send(`🏆🏆${enemy.username} Has Won!🏆🏆`)

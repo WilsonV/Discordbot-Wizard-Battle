@@ -17,7 +17,7 @@ module.exports = {
   async execute(Discord, client, interaction, Games, randomMatch) {
     try {
       //console.log("Before timer change", randomMatch[message.guildId])
-      if (!randomMatch[interaction.guildId]) return message.reply("You need to set a battle channel first.")
+      if (!randomMatch[interaction.guildId]) return interaction.reply("You need to set a battle channel first.")
       // if (!args[0]) return message.reply("You need to provide a number for the interval")
       // if (isNaN(args[0])) return message.reply(`${args[0]} is not a number`)
       // if (args[0] < 1 || args[0] > 60) return message.reply("Interval number needs to be between 1 and 60")

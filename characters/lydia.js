@@ -11,6 +11,7 @@ module.exports = {
   damage: 30,
   resist: 30,
   accuracy: 80,
+  healBoost: 0,
   frozenGiantBoost: { active: false, turnsLeft: 0, resist: 0 },
   iceAgeCost: 7,
   passive: function () {

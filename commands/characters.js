@@ -69,7 +69,7 @@ module.exports = {
           },
           {
             name: 'Pips',
-            value: `${progressbar.filledBar(100, currentCharacter.pips, 10, ' ')}`,
+            value: `${progressbar.filledBar(14, currentCharacter.pips, 14, ' ')}`,
             inline: true
           },
           {
@@ -88,8 +88,8 @@ module.exports = {
             inline: true
           },
           {
-            name: '-',
-            value: '-',
+            name: `${currentCharacter.healBoost == 0 ? '-' : 'Heal Boost'}`,
+            value: `${currentCharacter.healBoost == 0 ? '-' : currentCharacter.healBoost}`,
             inline: true
           }
         ]);
